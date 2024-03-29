@@ -13,6 +13,7 @@ import Admin from './Admin/Admin';
 import Home from './Home/Home';
 import Schedule from './Schedule/Schedule';
 import Profile from './Profile/Profile';
+import Booking from './Schedule/Booking';
 
 const AdminNavigator = () => {
     return (
@@ -39,6 +40,12 @@ const ScheduleNavigator = () => {
             <ScheduleStack.Screen
                 name="SchedulePage"
                 component={Schedule}
+                options={{ headerShown: false }}
+            />
+
+            <ScheduleStack.Screen
+                name='Booking'
+                component={Booking}
                 options={{ headerShown: false }}
             />
         </ScheduleStack.Navigator>
