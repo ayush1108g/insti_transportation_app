@@ -1,0 +1,7 @@
+.env, .env.local, .env.development, .env.production, .env.test
+config.env
+*.env
+server/config.env
+server/config.env
+/server/node_modules
+/server/node_modules/mongodb
