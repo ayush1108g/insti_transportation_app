@@ -1,6 +1,8 @@
 import { Dimensions, StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity } from 'react-native'
 import { React, useState, useEffect, useRef } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons'
+import { baseBackendUrl } from '../../constant';
+import axios from 'axios'
 
 const vw = (Dimensions.get('window').width) / 100;
 const vh = (Dimensions.get('window').height) / 100;
@@ -63,6 +65,22 @@ const Schedule = () => {
     const [filteredSuggestions, setFilteredSuggestions] = useState([]);
     const [valueto, setValueto] = useState('');
     const [filteredSuggestionsto, setFilteredSuggestionsto] = useState([]);
+    const [stops, setStops] = useState([]);
+    const [schedules, setSchedules] = useState([]);
+
+    useEffect(()=> {
+        const fetchData = async() => {
+            try {
+                const response = await axios.get(`${baseBackendUrl}/schedules`);
+                console.log(response.data);
+                const schedules = response.data;
+                setSchedules(schedules);
+            } catch ( err ) {
+                console.log(err);
+            }
+        }
+        fetchData();
+    }, []);
 
     useEffect(() => {
         if (value.trim() !== '') {
@@ -200,7 +218,7 @@ const Schedule = () => {
             <FlatList
                 data={data}
                 renderItem={renderItem}
-                keyExtractor={item => item.id}
+                keyExtractor={(item, index) => index.toString()}
             />
          <View style={{height:60}}>
 
