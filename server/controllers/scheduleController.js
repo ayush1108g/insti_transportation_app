@@ -14,7 +14,7 @@ exports.getScheduleById = catchAsync(async (req, res) => {
   
     const schedule = await Schedule.findById(req.params.id);
     if (!schedule) {
-      return res.status(404).json({ message: 'Schedule not found' });
+      return next(new AppError('Schedule Not found', 404));
     }
     res.json(schedule);
   } );
@@ -39,7 +39,7 @@ exports.updateSchedule = catchAsync(async (req, res) => {
   
     const schedule = await Schedule.findById(req.params.id);
     if (!schedule) {
-      return res.status(404).json({ message: 'Schedule not found' });
+      return next(new AppError('Schedule Not found', 404));
     }
 
     if (req.body.routeName) {
@@ -69,7 +69,7 @@ exports.deleteSchedule = catchAsync( async (req, res) => {
   
     const schedule = await Schedule.findById(req.params.id);
     if (!schedule) {
-      return res.status(404).json({ message: 'Schedule not found' });
+      return next(new AppError('Schedule Not found', 404));
     }
     await schedule.remove();
     res.json({ message: 'Schedule deleted' });
@@ -82,7 +82,7 @@ exports.addStop = catchAsync( async (req, res) => {
   
     const schedule = await Schedule.findById(scheduleId);
     if (!schedule) {
-      return res.status(404).json({ message: 'Schedule not found' });
+      return next(new AppError('Schedule Not found', 404));
     }
 
     const newStop = {
@@ -103,12 +103,12 @@ exports.deleteStop = catchAsync(async (req, res) => {
   
     const schedule = await Schedule.findById(scheduleId);
     if (!schedule) {
-      return res.status(404).json({ message: 'Schedule not found' });
+      return next(new AppError('Schedule Not found', 404));
     }
 
     const stopIndex = schedule.busStops.findIndex(stop => stop._id == stopId);
     if (stopIndex === -1) {
-      return res.status(404).json({ message: 'Stop not found in the schedule' });
+      return next(new AppError('Bus Stop Not found', 404));
     }
 
     schedule.busStops.splice(stopIndex, 1);

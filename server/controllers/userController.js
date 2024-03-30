@@ -31,7 +31,7 @@ exports.getUserById = catchAsync(async (req, res) => {
  
     const user = await User.findById(req.params.id);
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return next(new AppError('User not Found', 404));
     }
     res.json(user);
 });
@@ -55,7 +55,7 @@ exports.updateUser = catchAsync(async (req, res) => {
   
     const user = await User.findById(req.params.id);
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return next(new AppError('User not Found', 404));
     }
 
     if (req.body.email) {
@@ -82,7 +82,7 @@ exports.deleteUser = catchAsync(async (req, res) => {
   
     const user = await User.findById(req.params.id);
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return next(new AppError('User not Found', 404));
     }
     await User.deleteOne({ _id: req.params.id }); 
     res.json({ message: 'User deleted' });
@@ -94,7 +94,7 @@ exports.getPreviousRides = catchAsync(async (req, res) => {
   
     const user = await User.findById(userId); 
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return next(new AppError('User not Found', 404));
     }
 
     res.status(200).json(user.previousRides);

@@ -16,7 +16,7 @@ exports.getBookingById = catchAsync(async (req, res) => {
   
     const booking = await Booking.findById(req.params.id);
     if (!booking) {
-      return res.status(404).json({ message: 'Booking not found' });
+      return next(new AppError('Booking not found', 404));
     }
     res.json(booking);
   } );
@@ -26,12 +26,12 @@ exports.createBooking = catchAsync(async (req, res) => {
 
     const schedule = await Schedule.findById(scheduleId);
     if (!schedule) {
-      return res.status(404).json({ message: 'Schedule not found' });
+      return next(new AppError('Schedule Not found', 404));
     }
 
     const updatedTotalBookings = schedule.totalBookings + 1;
     if (updatedTotalBookings > 60) {
-      return res.status(400).json({ message: 'Bus is full' });
+      return next(new AppError('Bus is Full', 400));
     }
 
     schedule.totalBookings = updatedTotalBookings;
@@ -48,7 +48,7 @@ exports.createBooking = catchAsync(async (req, res) => {
 
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return next(new AppError('User not Found', 404));
     }
 
     user.previousRides.push(booking._id);
@@ -66,7 +66,7 @@ exports.createBooking = catchAsync(async (req, res) => {
 exports.updateBooking = catchAsync(async (req, res) => {
     const booking = await Booking.findById(req.params.id);
     if (!booking) {
-      return res.status(404).json({ message: 'Booking not found' });
+      return next(new AppError('Booking not found', 404));
     }
 
     if (req.body.userId) {
@@ -86,12 +86,12 @@ exports.updateBooking = catchAsync(async (req, res) => {
 exports.deleteBooking = catchAsync(async (req, res) => {
     const booking = await Booking.findById(req.params.id);
     if (!booking) {
-      return res.status(404).json({ message: 'Booking not found' });
+      return next(new AppError('Booking not found', 404));
     }
 
     const user = await User.findById(booking.userId);
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return next(new AppError('User not Found', 404));
     }
 
     user.previousRides.pull(booking._id);

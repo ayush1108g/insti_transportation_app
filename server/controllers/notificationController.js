@@ -13,7 +13,7 @@ exports.getAllNotifications = catchAsync(async (req, res) => {
 exports.getNotificationById = catchAsync( async (req, res) => {
     const notification = await Notification.findById(req.params.id);
     if (!notification) {
-      return res.status(404).json({ message: 'Notification not found' });
+      return next(new AppError('Notification not Found', 404));
     }
     res.json(notification);
   } );
@@ -36,7 +36,7 @@ exports.updateNotification = catchAsync(async (req, res) => {
   
     const notification = await Notification.findById(req.params.id);
     if (!notification) {
-      return res.status(404).json({ message: 'Notification not found' });
+      return next(new AppError('Notification not Found', 404));
     }
 
     if (req.body.title) {
@@ -60,7 +60,7 @@ exports.deleteNotification = catchAsync(async (req, res) => {
 
     const notification = await Notification.findById(req.params.id);
     if (!notification) {
-      return res.status(404).json({ message: 'Notification not found' });
+      return next(new AppError('Notification not Found', 404));
     }
     await notification.deleteOne({ _id: req.params.id }); 
     res.json({ message: 'Notification deleted' });
