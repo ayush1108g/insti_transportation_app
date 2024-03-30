@@ -21,6 +21,10 @@ const scheduleSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  totalBookings: {
+    type: Number,
+    default: 0
+  },
   busStops: [{
     stopName: {
       type: String,

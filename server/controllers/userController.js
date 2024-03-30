@@ -1,6 +1,5 @@
 const User = require('../models/user');
 
-// Get all users
 exports.getAllUsers = async (req, res) => {
   try {
     const users = await User.find();
@@ -10,7 +9,6 @@ exports.getAllUsers = async (req, res) => {
   }
 };
 
-// Get a single user by ID
 exports.getUserById = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
@@ -23,18 +21,16 @@ exports.getUserById = async (req, res) => {
   }
 };
 
-// Create a new user
 exports.createUser = async (req, res) => {
-  const { email, password, role, fullName, phoneNumber } = req.body;
+  const { email, password, role, name, phoneNumber } = req.body;
 
   try {
     const newUser = new User({
       email,
       password,
       role,
-      fullName,
+      name,
       phoneNumber
-      // Add additional fields as needed
     });
 
     const savedUser = await newUser.save();
@@ -44,7 +40,6 @@ exports.createUser = async (req, res) => {
   }
 };
 
-// Update a user
 exports.updateUser = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
@@ -52,7 +47,6 @@ exports.updateUser = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Update only the fields that are sent in the request body
     if (req.body.email) {
       user.email = req.body.email;
     }
@@ -62,13 +56,12 @@ exports.updateUser = async (req, res) => {
     if (req.body.role) {
       user.role = req.body.role;
     }
-    if (req.body.fullName) {
-      user.fullName = req.body.fullName;
+    if (req.body.name) {
+      user.name = req.body.name;
     }
     if (req.body.phoneNumber) {
       user.phoneNumber = req.body.phoneNumber;
     }
-    // Update additional fields as needed
 
     const updatedUser = await user.save();
     res.json(updatedUser);
@@ -77,16 +70,31 @@ exports.updateUser = async (req, res) => {
   }
 };
 
-// Delete a user
 exports.deleteUser = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    await User.deleteOne({ _id: req.params.id }); // Use deleteOne to remove the document
+    await User.deleteOne({ _id: req.params.id }); 
     res.json({ message: 'User deleted' });
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+};
+
+exports.getPreviousRides = async (req, res) => {
+  const userId = req.params.id; 
+
+  try {
+    const user = await User.findById(userId); 
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json(user.previousRides);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 };

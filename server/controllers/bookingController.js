@@ -1,7 +1,7 @@
 const Booking = require('../models/bookings');
 const Schedule = require('../models/busSchedule');
+const User = require('../models/user');
 
-// Get all bookings
 exports.getAllBookings = async (req, res) => {
   try {
     const bookings = await Booking.find();
@@ -11,7 +11,6 @@ exports.getAllBookings = async (req, res) => {
   }
 };
 
-// Get a single booking by ID
 exports.getBookingById = async (req, res) => {
   try {
     const booking = await Booking.findById(req.params.id);
@@ -24,9 +23,8 @@ exports.getBookingById = async (req, res) => {
   }
 };
 
-// Create a new booking
 exports.createBooking = async (req, res) => {
-  const { userId, scheduleId, seatNumber, cost } = req.body;
+  const { userId, scheduleId, cost } = req.body;
 
   try {
     const schedule = await Schedule.findById(scheduleId);
@@ -34,28 +32,37 @@ exports.createBooking = async (req, res) => {
       return res.status(404).json({ message: 'Schedule not found' });
     }
 
-    // Check if seat is available
-    const bookedSeats = await Booking.find({ scheduleId: scheduleId });
-    if (bookedSeats.length >= schedule.capacity) {
-      return res.status(400).json({ message: 'No available seats for this schedule' });
+    const updatedTotalBookings = schedule.totalBookings + 1;
+    if (updatedTotalBookings > 60) {
+      return res.status(400).json({ message: 'Bus is full' });
     }
+
+    schedule.totalBookings = updatedTotalBookings;
+    await schedule.save();
 
     const booking = new Booking({
       userId,
       scheduleId,
-      seatNumber,
       cost
-      // Add additional fields as needed
     });
 
-    const newBooking = await booking.save();
-    res.status(201).json(newBooking);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
+    await booking.save();
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.previousRides.push(booking._id);
+    await user.save();
+
+    res.status(201).json({ message: 'Booking created successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 };
 
-// Update a booking
 exports.updateBooking = async (req, res) => {
   try {
     const booking = await Booking.findById(req.params.id);
@@ -63,20 +70,15 @@ exports.updateBooking = async (req, res) => {
       return res.status(404).json({ message: 'Booking not found' });
     }
 
-    // Update only the fields that are sent in the request body
     if (req.body.userId) {
       booking.userId = req.body.userId;
     }
     if (req.body.scheduleId) {
       booking.scheduleId = req.body.scheduleId;
     }
-    if (req.body.seatNumber) {
-      booking.seatNumber = req.body.seatNumber;
-    }
     if (req.body.cost) {
       booking.cost = req.body.cost;
     }
-    // Update additional fields as needed
 
     const updatedBooking = await booking.save();
     res.json(updatedBooking);
@@ -85,14 +87,23 @@ exports.updateBooking = async (req, res) => {
   }
 };
 
-// Delete a booking
 exports.deleteBooking = async (req, res) => {
   try {
     const booking = await Booking.findById(req.params.id);
     if (!booking) {
       return res.status(404).json({ message: 'Booking not found' });
     }
-    await booking.remove();
+
+    const user = await User.findById(booking.userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.previousRides.pull(booking._id);
+    await user.save();
+
+    await booking.deleteOne(); 
+
     res.json({ message: 'Booking deleted' });
   } catch (err) {
     res.status(500).json({ message: err.message });

@@ -11,14 +11,14 @@ const bookingSchema = new mongoose.Schema({
     ref: 'Schedule',
     required: true
   },
-  seatNumber: {
-    type: Number,
-    required: true
-  },
-  isConfirmed: {
-    type: Boolean,
-    default: false
-  },
+  // seatNumber: {
+  //   type: Number,
+  //   required: true
+  // },
+  // isConfirmed: {
+  //   type: Boolean,
+  //   default: false
+  // },
   cost: {
     type: Number,
     required: true

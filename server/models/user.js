@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
     enum: ['student', 'faculty', 'admin'],
     required: true
   },
-  fullName: {
+  name: {
     type: String,
     required: true
   },

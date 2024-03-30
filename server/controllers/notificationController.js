@@ -1,6 +1,5 @@
 const Notification = require('../models/notifications');
 
-// Get all notifications
 exports.getAllNotifications = async (req, res) => {
   try {
     const notifications = await Notification.find();
@@ -10,7 +9,6 @@ exports.getAllNotifications = async (req, res) => {
   }
 };
 
-// Get a single notification by ID
 exports.getNotificationById = async (req, res) => {
   try {
     const notification = await Notification.findById(req.params.id);
@@ -23,7 +21,6 @@ exports.getNotificationById = async (req, res) => {
   }
 };
 
-// Create a new notification
 exports.createNotification = async (req, res) => {
   const { title, message, recipients } = req.body;
 
@@ -32,7 +29,6 @@ exports.createNotification = async (req, res) => {
       title,
       message,
       recipients
-      // Add additional fields as needed
     });
     
     const savedNotification = await newNotification.save();
@@ -42,7 +38,6 @@ exports.createNotification = async (req, res) => {
   }
 };
 
-// Update a notification
 exports.updateNotification = async (req, res) => {
   try {
     const notification = await Notification.findById(req.params.id);
@@ -50,7 +45,6 @@ exports.updateNotification = async (req, res) => {
       return res.status(404).json({ message: 'Notification not found' });
     }
 
-    // Update only the fields that are sent in the request body
     if (req.body.title) {
       notification.title = req.body.title;
     }
@@ -63,7 +57,6 @@ exports.updateNotification = async (req, res) => {
     if (req.body.isRead !== undefined) {
       notification.isRead = req.body.isRead;
     }
-    // Update additional fields as needed
 
     const updatedNotification = await notification.save();
     res.json(updatedNotification);
@@ -72,14 +65,13 @@ exports.updateNotification = async (req, res) => {
   }
 };
 
-// Delete a notification
 exports.deleteNotification = async (req, res) => {
   try {
     const notification = await Notification.findById(req.params.id);
     if (!notification) {
       return res.status(404).json({ message: 'Notification not found' });
     }
-    await notification.remove();
+    await notification.deleteOne({ _id: req.params.id }); 
     res.json({ message: 'Notification deleted' });
   } catch (err) {
     res.status(500).json({ message: err.message });
