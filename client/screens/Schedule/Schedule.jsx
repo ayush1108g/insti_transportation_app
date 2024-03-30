@@ -127,8 +127,8 @@ const Schedule = () => {
         </TouchableOpacity>
     );
 
-    const renderItem = ({ item }) => (
-        <View style={styles.item} >
+    const renderItem = ({ item,index }) => (
+        <View style={styles.item} key={index}>
             <Text style={styles.busNumber}>{item.busNumber}</Text>
             <View style={styles.l2}>
                 <View style={styles.Comp1}>
@@ -316,7 +316,7 @@ const styles = StyleSheet.create({
     },
     l2: {
         margin: 15,
-        marginLeft: 30,
+        marginLeft:'5%',
         display: 'flex',
         flexDirection: 'row',
     },
@@ -381,7 +381,7 @@ const styles = StyleSheet.create({
         borderBottomColor: '#ccc',
     },
     upd:{
-        marginLeft: 55 * vw,
+        marginLeft: '50%',
         marginRight:10,
         backgroundColor:'blue',
         color: 'white',
