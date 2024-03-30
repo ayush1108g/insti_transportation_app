@@ -17,7 +17,7 @@ const bookingSchema = new mongoose.Schema({
   },
   paymentMethod: {
     type: String,
-    enum: ['UPI', 'payLater'],
+    enum: ['Other', 'payLater'],
     required: true
   },
 }, { timestamps: true });
