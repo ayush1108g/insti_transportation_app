@@ -1,81 +1,61 @@
-import { Dimensions, StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity } from 'react-native'
-import { React, useState, useEffect, useRef } from 'react'
+import { Dimensions, StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { React, useState, useEffect, useRef, useContext } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { baseBackendUrl } from '../../constant';
 import axios from 'axios'
-
+import LoginContext from '../../store/AuthContext';
 const vw = (Dimensions.get('window').width) / 100;
 const vh = (Dimensions.get('window').height) / 100;
-const isadmin = true;
-const data = [
-    {
-        "busNumber": "Bus 1",
-        "startingPlace": "Place A",
-        "startingTime": "09:00 AM",
-        "endingPlace": "Place X",
-        "endingTime": "12:00 PM"
-    },
-    {
-        "busNumber": "Bus 2",
-        "startingPlace": "Place B",
-        "startingTime": "10:30 AM",
-        "endingPlace": "Place Y",
-        "endingTime": "01:30 PM"
-    },
-    {
-        "busNumber": "Bus 3",
-        "startingPlace": "Place C",
-        "startingTime": "11:45 AM",
-        "endingPlace": "Place Z",
-        "endingTime": "02:45 PM"
-    },
-    {
-        "busNumber": "Bus 4",
-        "startingPlace": "Place D",
-        "startingTime": "01:00 PM",
-        "endingPlace": "Place W",
-        "endingTime": "04:00 PM"
-    },
-    {
-        "busNumber": "Bus 5",
-        "startingPlace": "Place E",
-        "startingTime": "02:15 PM",
-        "endingPlace": "Place V",
-        "endingTime": "05:15 PM"
-    }
-]
 
-const suggestionsData = [
-    { stopName: 'Stop 1' },
-    { stopName: 'Stop 2' },
-    { stopName: 'Stop 3' },
-    { stopName: 'Stop 4' },
-    { stopName: 'Stop 5' },
-    { stopName: 'Stop 6' },
-    { stopName: 'Stop 7' },
-    { stopName: 'Stop 8' },
-    { stopName: 'Stop 9' },
-    { stopName: 'Stop 10' },
-    { stopName: 'Stop 11' },
-    { stopName: 'Stop 12' },
-];
 
-const Schedule = () => {
+
+function formatISTDate(dateString) {
+    const utcDate = new Date(dateString);
+    const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
+
+    const optionsDate = {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+    };
+
+    const optionsTime = {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
+    };
+
+    const formattedDate = istDate.toLocaleString('en-IN', optionsDate);
+    const formattedTime = istDate.toLocaleString('en-IN', optionsTime);
+
+    return { date: formattedDate, time: formattedTime };
+}
+
+
+const Schedule = ({ navigation }) => {
+    const LoginCtx = useContext(LoginContext);
+    const isadmin = LoginCtx?.user?.role === 'admin';
+
     const [value, setValue] = useState('');
     const [filteredSuggestions, setFilteredSuggestions] = useState([]);
     const [valueto, setValueto] = useState('');
     const [filteredSuggestionsto, setFilteredSuggestionsto] = useState([]);
     const [stops, setStops] = useState([]);
     const [schedules, setSchedules] = useState([]);
+    const [filteredSchedules, setFilteredSchedules] = useState([]);
+    const [searching, setSearching] = useState(false);
 
-    useEffect(()=> {
-        const fetchData = async() => {
+    useEffect(() => {
+        const fetchData = async () => {
             try {
                 const response = await axios.get(`${baseBackendUrl}/schedules`);
                 console.log(response.data);
-                const schedules = response.data;
+                let schedules = response.data;
+                schedules = schedules.filter(schedule => new Date(schedule.startTime).getTime() > new Date().getTime());
                 setSchedules(schedules);
-            } catch ( err ) {
+                setFilteredSchedules(schedules);
+
+            } catch (err) {
                 console.log(err);
             }
         }
@@ -83,10 +63,63 @@ const Schedule = () => {
     }, []);
 
     useEffect(() => {
+        const fetchData2 = async () => {
+            try {
+                const response = await axios.get(`${baseBackendUrl}/busStations`);
+                console.log(response.data);
+                const data = response.data;
+                setStops(data);
+            } catch (err) {
+                console.log(err);
+            }
+        }
+        fetchData2();
+    }, []);
+
+    const filterSchedules = async () => {
+        setSearching(true);
+        if (value.trim() === '' || valueto.trim() === '') {
+            setFilteredSchedules(schedules);
+            setSearching(false);
+            return;
+        }
+        const fromid = stops.find(stop => stop.stationName === value)._id;
+        const toid = stops.find(stop => stop.stationName === valueto)._id;
+
+        if (!fromid || !toid) {
+            console.log('Invalid from or to');
+            return;
+        }
+
+        try {
+            const filteredResp = await axios.get(`${baseBackendUrl}/getPossibleRoutes?startLocationId=${fromid}&endLocationId=${toid}`);
+            let filtered = filteredResp.data;
+            filtered = filtered.filter(schedule => new Date(schedule.startTime).getTime() > new Date().getTime());
+            console.log(filtered);
+            setFilteredSchedules(filtered);
+        } catch (err) {
+            console.log(err);
+        } finally {
+            setSearching(false);
+        }
+
+    }
+
+
+    useEffect(() => {
+        if (value.trim() === '' || valueto.trim() === '') {
+            setFilteredSchedules(schedules);
+            return;
+        }
+
+    }, [value, valueto]);
+
+
+    useEffect(() => {
         if (value.trim() !== '') {
-            const filtered = suggestionsData.filter(
+            const filtered = stops?.filter(
                 suggestion =>
-                    suggestion.stopName.toLowerCase().includes(value.toLowerCase())
+                    suggestion?.stationName.toLowerCase().includes(value.toLowerCase())
             );
             setFilteredSuggestions(filtered);
         } else {
@@ -96,70 +129,91 @@ const Schedule = () => {
 
     useEffect(() => {
         if (valueto.trim() !== '') {
-            const filteredto = suggestionsData.filter(
+            const filteredto = stops?.filter(
                 suggestion =>
-                    suggestion.stopName.toLowerCase().includes(valueto.toLowerCase())
+                    suggestion?.stationName.toLowerCase().includes(valueto.toLowerCase())
             );
             setFilteredSuggestionsto(filteredto);
         } else {
             setFilteredSuggestionsto([]);
         }
     }, [valueto]);
-    const handleSuggestionPress = (suggestion) => {
-        setValue(suggestion.stopName);
-        setFilteredSuggestions([]); 
+
+
+    const swapHandler = () => {
+        const temp = value;
+        setValue(valueto);
+        setValueto(temp);
     };
-    
+
+    const handleSuggestionPress = (suggestion) => {
+        setValue(suggestion?.stationName);
+        setFilteredSuggestions([]);
+    };
+
     const handleSuggestionPressto = (suggestion) => {
-        setValueto(suggestion.stopName);
+        setValueto(suggestion?.stationName);
         setFilteredSuggestionsto([]);
     };
-    
+
     const renderSuggestionItem = ({ item }) => (
         <TouchableOpacity onPress={() => handleSuggestionPress(item)} style={styles.suggestionItem}>
-            <Text>{item.stopName}</Text>
+            <Text>{item?.stationName}</Text>
         </TouchableOpacity>
     );
 
     const renderSuggestionItemto = ({ item }) => (
         <TouchableOpacity onPress={() => handleSuggestionPressto(item)} style={styles.suggestionItem}>
-            <Text>{item.stopName}</Text>
+            <Text>{item?.stationName}</Text>
         </TouchableOpacity>
     );
 
-    const renderItem = ({ item,index }) => (
-        <View style={styles.item} key={index}>
-            <Text style={styles.busNumber}>{item.busNumber}</Text>
-            <View style={styles.l2}>
-                <View style={styles.Comp1}>
-                    <Text style={styles.place} >{item.startingPlace}</Text>
-                    <Text style={styles.time} >{item.startingTime}</Text>
-                </View>
-                <View style={styles.Compmid}>
-                    <View style={styles.w0l}>
+    const renderItem = ({ item, index }) => {
+        const timeGap = Math.abs(new Date(item?.endTime) - new Date(item?.startTime));
+        const timeGapInMinutes = Math.floor(timeGap / 60000);
+        const timeGapString = `${timeGapInMinutes}min `;
+        console.log(timeGapString);
+        item.value = value;
+        item.valueto = valueto;
+        item.stops = stops;
 
-                    </View >
-                    <View style={styles.smbx}>
+        return <View style={styles.item} key={index} >
+            <TouchableOpacity onPress={() => { return navigation.navigate('Booking', { data: item }) }}>
 
+                <Text style={styles.busNumber}>{item?.routeName}</Text>
+                <Text>{formatISTDate(item?.startTime).date}</Text>
+                <View style={styles.l2}>
+                    <View style={styles.Comp1}>
+                        <Text style={styles.place} >{item?.startLocation?.stationName}</Text>
+                        <Text style={styles.time} >{formatISTDate(item?.startTime).time}</Text>
                     </View>
-                    <View style={styles.w0r}>
+                    <View style={styles.Compmid}>
+                        <View style={styles.w0l}>
+                        </View >
+                        <View style={styles.smbx}>
+                            <Text>{timeGapString}</Text>
 
+                        </View>
+                        <View style={styles.w0r}>
+
+                        </View>
+                    </View>
+                    <View style={styles.Comp2}>
+                        <Text style={styles.place}>{item?.endLocation?.stationName}</Text>
+                        <Text style={styles.time}>{formatISTDate(item?.endTime).time}</Text>
                     </View>
                 </View>
-                <View style={styles.Comp2}>
-                    <Text style={styles.place}>{item.endingPlace}</Text>
-                    <Text style={styles.time}>{item.endingTime}</Text>
-                </View>
-            </View>
-            
+
+            </TouchableOpacity>
             {
-                isadmin && <View style={{display:'flex',flexDirection:'row'}}> 
-                <Text style={styles.upd}>Update</Text>
-                <Text style={styles.dlt}>Delete</Text>
+                isadmin && <View style={{ display: 'flex', flexDirection: 'row' }}>
+                    <Text style={styles.upd}>Update</Text>
+                    <Text style={styles.dlt}>Delete</Text>
                 </View>
             }
         </View>
-    );
+
+    };
 
     return (
         <View style={{ flex: 1, flexDirection: 'column' }}>
@@ -185,7 +239,7 @@ const Schedule = () => {
                         )}
                     </View>
                 </View>
-                <Icon name='swap-vertical' size={23} style={styles.arrow} ></Icon>
+                <Icon name='swap-vertical' size={23} style={styles.arrow} onPress={swapHandler} ></Icon>
                 <View style={[styles.box1_1, styles.b2]} >
                     <Text>To</Text>
                     <View style={styles.container}>
@@ -206,23 +260,30 @@ const Schedule = () => {
                         )}
                     </View>
                 </View>
-                <View style={styles.box1_1}>
+                {/* <View style={styles.box1_1}>
                     <Text>Date</Text>
                     <TextInput style={styles.input}></TextInput>
-                </View>
+                </View> */}
                 <View style={styles.button} >
-                    <Text style={{ color: 'white' }}>Search</Text>
+                    <TouchableOpacity onPress={filterSchedules} disabled={searching}>
+
+
+                        {!searching ? <Text style={{ color: 'white' }}>Search</Text> :
+
+                            <ActivityIndicator animating={true} color='black' size='large' />}
+
+                    </TouchableOpacity>
                 </View>
             </View>
 
             <FlatList
-                data={data}
+                data={filteredSchedules}
                 renderItem={renderItem}
                 keyExtractor={(item, index) => index.toString()}
             />
-         <View style={{height:60}}>
+            <View style={{ height: 60 }}>
 
-         </View>
+            </View>
         </View>
     )
 }
@@ -232,7 +293,7 @@ export default Schedule;
 const styles = StyleSheet.create({
     box1: {
         width: 90 * vw,
-        height: 45 * vh,
+        height: 35 * vh,
         backgroundColor: '#fff',
         borderRadius: 10,
         margin: 5 * vw,
@@ -263,7 +324,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         padding: 10,
         marginBottom: 10,
-       
+
     },
     button: {
         height: 5 * vh,
@@ -315,8 +376,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     l2: {
-        margin: 15,
-        marginLeft:'5%',
+        margin: 10,
+        marginLeft: '5%',
         display: 'flex',
         flexDirection: 'row',
     },
@@ -327,25 +388,27 @@ const styles = StyleSheet.create({
     w0l: {
         borderColor: 'black',
         borderWidth: 1,
-        width: 40,
+        width: 30,
     },
     w0r: {
         borderColor: 'black',
         borderWidth: 1,
-        width: 40,
+        width: 30,
     },
     smbx: {
         borderColor: 'black',
         borderWidth: 1,
-        width: 60,
+        width: 80,
         height: 30,
         borderRadius: 50,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     time: {
         fontSize: 12,
     },
     dlt: {
-       
+
         backgroundColor: 'black',
         color: 'white',
         alignItems: 'center',
@@ -371,19 +434,19 @@ const styles = StyleSheet.create({
         right: 0,
         backgroundColor: 'white',
         zIndex: 1,
-        elevation: 5, 
-        maxHeight: 200, 
-        overflow: 'scroll', 
+        elevation: 5,
+        maxHeight: 200,
+        overflow: 'scroll',
     },
     suggestionItem: {
         padding: 10,
         borderBottomWidth: 1,
         borderBottomColor: '#ccc',
     },
-    upd:{
-        marginLeft: '50%',
-        marginRight:10,
-        backgroundColor:'blue',
+    upd: {
+        marginLeft: '60%',
+        marginRight: 10,
+        backgroundColor: 'blue',
         color: 'white',
         alignItems: 'center',
         justifyContent: 'center',

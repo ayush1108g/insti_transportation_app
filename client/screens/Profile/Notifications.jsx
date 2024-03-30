@@ -1,47 +1,59 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, FlatList } from 'react-native';
 import axios from 'axios';
+import useSocket from '../../store/SocketContext';
 import { baseBackendUrl } from '../../constant';
 
-const Notificatios = () => {
+const Notifications = () => {
+    const socket = useSocket();
     const [notifications, setNotifications] = useState([]);
 
     useEffect(() => {
-        // fetch notifications
-        const fetch = async () => {
+        const fetchNotifications = async () => {
             try {
                 const res = await axios.get(baseBackendUrl + "/notifications");
-                setNotifications(res.data);
-                console.log(res.data);
-
-            } catch (e) {
-                console.log(e);
+                const notifications = res.data;
+                setNotifications(notifications.reverse());
+            } catch (error) {
+                console.error("Error fetching notifications:", error);
             }
-        }
-        fetch();
-    }, []);
+        };
+
+        fetchNotifications();
+    }, [socket.updated]);
+
+    const renderNotificationItem = ({ item }) => (
+        <View style={styles.notificationItem}>
+            <Text style={{ fontWeight: 'bold', fontSize: 15 }}>{item.title}</Text>
+            <Text style={{ fontSize: 12 }}>{item.message}</Text>
+        </View>
+    );
 
     return (
-        <View>
-            {!notifications && <Text>Notificatios</Text>}
-            <View style={styles.container}>
-                <View><Text>Text</Text></View>
-                <View><Text>Message</Text></View>
-                <View></View>
-
-            </View>
-        </View>
-    )
-}
-
-export default Notificatios;
+        <View style={styles.container}>
+            {notifications.length === 0 && <Text>No notifications available</Text>}
+            <FlatList
+                data={notifications}
+                renderItem={renderNotificationItem}
+                keyExtractor={(item, index) => index.toString()}
+            />
+        </View >
+    );
+};
 
 const styles = StyleSheet.create({
     container: {
-        flexDirection: 'column',
-        margin: 20,
-        borderWidth: 1,
-        borderRadius: 50,
-        paddingHorizontal: 10,
-    }
-})
+        flex: 1,
+        backgroundColor: '#fff',
+        paddingTop: 20,
+    },
+    notificationItem: {
+        padding: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#ccc',
+        marginLeft: 10,
+        width: '95%',
+    },
+});
+
+export default Notifications;
