@@ -12,6 +12,11 @@ import { Button, Provider as PaperProvider } from "react-native-paper";
 import LoginContext, { LoginContextProvider } from "./store/AuthContext";
 import { AlertProvider } from "./store/AlertContext";
 import { SocketContextProvider } from "./store/SocketContext";
+import {
+  requestPermissions,
+  scheduleNotificationHandler,
+} from "./store/NotificationLocal";
+
 import Login from "./screens/Login";
 import Tabs from "./screens/Tabs";
 
@@ -34,6 +39,11 @@ export default function AppExtended() {
 const App = () => {
   const LoginCtx = useContext(LoginContext);
   const navigation = useNavigation();
+
+  useEffect(() => {
+    requestPermissions();
+  }, []);
+
   return (
     <View style={styles.mainContainer}>
       <PaperProvider>

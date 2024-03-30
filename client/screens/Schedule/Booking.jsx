@@ -1,49 +1,119 @@
-import { Dimensions, StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity } from 'react-native'
+import { Dimensions, StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity, KeyboardAvoidingView } from 'react-native'
 import { React, useState, useEffect, useRef } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons'
+import { ScrollView } from 'react-native-gesture-handler';
 
 const vw = (Dimensions.get('window').width) / 100;
 const vh = (Dimensions.get('window').height) / 100;
 
-const Booking = () => {
-  return (
-    <View>
-          <View style={styles.box1}>
-                <View style={[styles.box1_1, styles.b1]}>
-                    <Text style={{color:'grey'}}>From</Text>
-                   <Text style={styles.input}>Munich</Text>
+
+function formatISTDate(dateString) {
+    const utcDate = new Date(dateString);
+    const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
+
+    const optionsDate = {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+    };
+
+    const optionsTime = {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
+    };
+
+    const formattedDate = istDate.toLocaleString('en-IN', optionsDate);
+    const formattedTime = istDate.toLocaleString('en-IN', optionsTime);
+
+    return { date: formattedDate, time: formattedTime };
+}
+function findCost(data, startLocation, endLocation) {
+    console.log(startLocation, endLocation);
+    let cost = 0;
+    if (data?.startLocation?.stationName === startLocation && data?.endLocation?.stationName === endLocation) {
+        cost = data.cost;
+        return cost;
+    }
+    const stations = data.busStops;
+    console.log(stations);
+
+    stations.forEach((station, index) => {
+        if (station?.stopId?.stationName === startLocation) {
+            cost -= station.cost;
+        }
+        if (station?.stopId?.stationName === endLocation) {
+            cost += station.cost;
+        }
+        return 0;
+    });
+    return cost;
+}
+
+
+
+
+const Booking = ({ route, navigation }) => {
+    const { data } = route.params;
+    // console.log(data);
+    // const [cost, setCost] = useState(0);
+
+    const bookticketHandler = () => {
+        navigation.navigate('Payment', { data });
+    }
+
+    const costtopay = findCost(data, data?.value || data?.startLocation?.stationName, data?.valueto || data?.endLocation?.stationName);
+    return (
+        <ScrollView>
+            <KeyboardAvoidingView>
+
+                <View style={styles.box1}>
+                    <View style={[styles.box1_1, styles.b1]}>
+                        <Text style={{ color: 'grey' }}>From</Text>
+                        <Text style={styles.input}>{data.value ? data.value : data?.startLocation?.stationName}</Text>
+                    </View>
+
+                    <View style={[styles.box1_1, styles.b2]} >
+                        <Text style={{ color: 'grey' }}>To</Text>
+                        <Text style={styles.input}>{data.valueto ? data.valueto : data?.endLocation?.stationName}</Text>
+                    </View>
+                    <View style={styles.box1_1}>
+                        <Text style={{ color: 'grey' }}>Date and Time </Text>
+                        <Text style={styles.input}>{formatISTDate(data?.startTime).date} {formatISTDate(data?.startTime).time}</Text>
+                    </View>
+                    <View style={styles.box1_1}>
+                        <Text style={{ color: 'grey' }}>Total Seats </Text>
+                        <Text style={styles.input}>{data?.capacity}</Text>
+                    </View>
+                    <View style={styles.box1_1}>
+                        <Text style={{ color: 'grey' }}>Seats Available </Text>
+                        <Text style={styles.input}>{data?.capacity - data?.totalBookings}</Text>
+                    </View>
+                    <View style={styles.box1_1}>
+                        <Text style={{ color: 'grey' }}>Ticket Fare</Text>
+                        <Text style={styles.input}>{costtopay}</Text>
+                    </View>
+                    {/* <View style={styles.box1_1}>
+                        <Text style={{ fontWeight: 'bold' }}>Number of Seats to be Booked</Text>
+                        <TextInput
+                            style={styles.input}
+                            keyboardType='numeric'
+                            placeholder='Enter number of seats'
+                            maxLength={1}
+
+                        ></TextInput>
+                    </View> */}
+                    <View style={styles.button} >
+                        <TouchableOpacity onPress={bookticketHandler}>
+
+                            <Text style={{ color: 'white' }}>Book Now</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
-               
-                <View style={[styles.box1_1, styles.b2]} >
-                    <Text style={{color:'grey'}}>To</Text>
-                    <Text style={styles.input}>Warswaz</Text>
-                </View>
-                <View style={styles.box1_1}>
-                    <Text style={{color:'grey'}}>Date and Time </Text>
-                    <Text style={styles.input}></Text>
-                </View>
-                <View style={styles.box1_1}>
-                    <Text style={{color:'grey'}}>Total Seats </Text>
-                    <Text style={styles.input}>99</Text>
-                </View>
-                <View style={styles.box1_1}>
-                    <Text style={{color:'grey'}}>Seats Available </Text>
-                    <Text style={styles.input}>10</Text>
-                </View>
-                <View style={styles.box1_1}>
-                    <Text style={{color:'grey'}}>Ticket Fare</Text>
-                    <Text style={styles.input}>10</Text>
-                </View>
-                 <View style={styles.box1_1}>
-                    <Text style={{fontWeight:'bold'}}>Number of Seats to be Booked</Text>
-                    <TextInput style={styles.input}></TextInput>
-                </View>
-                <View style={styles.button} >
-                    <Text style={{ color: 'white' }}>Book Now</Text>
-                </View>
-            </View>
-    </View>
-  )
+            </KeyboardAvoidingView>
+            <View style={{ minHeight: 60 }}></View>
+        </ScrollView>
+    )
 }
 
 export default Booking
@@ -52,7 +122,7 @@ export default Booking
 const styles = StyleSheet.create({
     box1: {
         width: 90 * vw,
-        height: 83* vh,
+        height: 78 * vh,
         backgroundColor: '#fff',
         borderRadius: 10,
         margin: 5 * vw,
@@ -68,10 +138,10 @@ const styles = StyleSheet.create({
     },
     box1_1: {
         height: 6 * vh,
-        margin: 2* vh,
+        margin: 2 * vh,
         marginLeft: 3 * vw,
         marginRight: 3 * vw,
-        
+
     },
     input: {
         height: 40,
@@ -79,7 +149,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         padding: 10,
         marginBottom: 10,
-           color:'grey'
+        color: 'grey'
     },
     button: {
         height: 5 * vh,
@@ -108,5 +178,5 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
 
-   
+
 })

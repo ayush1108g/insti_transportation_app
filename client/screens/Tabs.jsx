@@ -14,11 +14,15 @@ const ProfileStack = createStackNavigator();
 
 import Admin from './Admin/Admin';
 import SendNotification from './Admin/SendNotification';
+
 import Home from './Home/Home';
-import Schedule from './Schedule/Schedule';
+
 import Profile from './Profile/Profile';
 import Notifications from './Profile/Notifications';
+
+import Schedule from './Schedule/Schedule';
 import Booking from './Schedule/Booking';
+import Payment from './Schedule/Payment';
 
 const AdminNavigator = () => {
     return (
@@ -61,6 +65,11 @@ const ScheduleNavigator = () => {
             <ScheduleStack.Screen
                 name='Booking'
                 component={Booking}
+                options={{ headerShown: false }}
+            />
+            <ScheduleStack.Screen
+                name='Payment'
+                component={Payment}
                 options={{ headerShown: false }}
             />
         </ScheduleStack.Navigator>

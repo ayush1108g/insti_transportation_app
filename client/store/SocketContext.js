@@ -3,14 +3,19 @@ import { io } from "socket.io-client";
 import { useAlert } from "./AlertContext";
 import LoginContext from "./AuthContext";
 import { baseBackendUrl } from "../constant";
+import { scheduleNotificationHandler } from "./NotificationLocal";
 
 const SocketContext = createContext({
+  updated: false,
   socket: null,
   setSocketId: () => {},
+  sendMessages: () => {},
 });
 
 export const SocketContextProvider = ({ children }) => {
+  const [updated, setUpdated] = useState(false);
   const [socket, setSocket] = useState(null);
+  const [appOpen, setAppOpen] = useState(true);
   const { showAlert } = useAlert();
   const loginCtx = useContext(LoginContext);
 
@@ -18,6 +23,7 @@ export const SocketContextProvider = ({ children }) => {
     if (!loginCtx.isLoggedIn) {
       return;
     }
+    setAppOpen(true);
     const newSocket = io(baseBackendUrl, {
       withCredentials: true,
     });
@@ -25,7 +31,8 @@ export const SocketContextProvider = ({ children }) => {
     console.log(newSocket);
 
     return () => {
-      newSocket.disconnect();
+      // newSocket.disconnect();
+      setAppOpen(false);
     };
   }, [loginCtx.isLoggedIn]);
 
@@ -34,6 +41,11 @@ export const SocketContextProvider = ({ children }) => {
       socket.on("receiveNotification", (message) => {
         console.log("message received", message);
         showAlert("success", message.message, message.title);
+        setUpdated(!updated);
+
+        if (!appOpen) {
+          scheduleNotificationHandler(message.title, message.message);
+        }
       });
     }
   }, [socket]);
@@ -43,6 +55,7 @@ export const SocketContextProvider = ({ children }) => {
   };
 
   const context = {
+    updated,
     socket,
     setSocketId: setSocket,
     sendMessages,
