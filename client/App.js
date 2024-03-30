@@ -4,8 +4,6 @@ import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import axios from "axios";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Button, Provider as PaperProvider } from "react-native-paper";
 
@@ -17,11 +15,27 @@ import {
   scheduleNotificationHandler,
 } from "./store/NotificationLocal";
 
+import { Platform } from "react-native";
+import { Permissions } from "expo";
+// import * as Permissions from "expo-permissions";
+
 import Login from "./screens/Login";
 import Tabs from "./screens/Tabs";
 
 const Stack = createStackNavigator();
 
+// const requestFilesystemPermission = async () => {
+//   if (Platform.OS === "android") {
+//     const { status } = await Permissions.askAsync(Permissions.MEDIA_LIBRARY);
+//     if (status === "granted") {
+//       console.log("File system permissions granted");
+//     } else {
+//       console.log("File system permissions denied");
+//     }
+//   } else {
+//     console.warn("File system permissions not required for iOS");
+//   }
+// };
 export default function AppExtended() {
   return (
     <NavigationContainer>
@@ -43,6 +57,10 @@ const App = () => {
   useEffect(() => {
     requestPermissions();
   }, []);
+
+  // useEffect(() => {
+  //   requestFilesystemPermission();
+  // }, []);
 
   return (
     <View style={styles.mainContainer}>
