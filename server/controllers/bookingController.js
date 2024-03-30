@@ -30,7 +30,7 @@ exports.createBooking = catchAsync(async (req, res) => {
     }
 
     const updatedTotalBookings = schedule.totalBookings + 1;
-    if (updatedTotalBookings > 60) {
+    if (updatedTotalBookings > schedule.capacity) {
       return next(new AppError('Bus is Full', 400));
     }
 

@@ -17,7 +17,6 @@ const notificationSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
-  // Additional fields like sender, timestamp, etc.
 }, { timestamps: true });
 
 const Notification = mongoose.model('Notification', notificationSchema);

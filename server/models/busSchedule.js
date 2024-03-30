@@ -5,12 +5,17 @@ const scheduleSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  capacity: {
+    type: Number,
+    required: true
+  },
   startTime: {
     type: Date,
     required: true
   },
   startLocation: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'BusStation',
     required: true
   },
   endTime: {
@@ -18,16 +23,22 @@ const scheduleSchema = new mongoose.Schema({
     required: true
   },
   endLocation: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'BusStation',
     required: true
   },
   totalBookings: {
     type: Number,
     default: 0
   },
+  cost: {
+    type: Number,
+    required: true
+  },
   busStops: [{
-    stopName: {
-      type: String,
+    stopId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'BusStation',
       required: true
     },
     arrivalTime: {
@@ -36,9 +47,12 @@ const scheduleSchema = new mongoose.Schema({
     },
     cost: {
         type: Number,
+    },
+    stopNumber: {
+        type: Number,
+        required: true
     }
   }],
-  // Additional fields like vehicle type, driver information, etc.
 }, { timestamps: true });
 
 const Schedule = mongoose.model('Schedule', scheduleSchema);

@@ -12,6 +12,8 @@ const port = process.env.PORT || 3000;
 const userRouter = require("./routes/user");
 const bookingRouter = require("./routes/bookings");
 const scheduleRouter = require("./routes/busSchedule");
+const busStationRouter = require("./routes/busStation");
+const possibleRoutesRouter = require("./routes/possibleRoutesRouter");
 const notificationRouter = require("./routes/notifications");
 const globalErrorHandler = require("./controllers/errorController");
 
@@ -27,7 +29,9 @@ app.use(morgan("dev"));
 app.use("/users", userRouter);
 app.use("/bookings", bookingRouter);
 app.use("/schedules", scheduleRouter);
+app.use("/busStations", busStationRouter);
 app.use("/notifications", notificationRouter);
+app.use("/getPossibleRoutes", possibleRoutesRouter);
 
 app.get("/", (req, res) => {
   res.send("Welcome to the bus booking API");
