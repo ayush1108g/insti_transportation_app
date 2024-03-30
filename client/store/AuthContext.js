@@ -7,84 +7,43 @@ import { baseBackendUrl } from "../constant";
 const LoginContext = React.createContext({
   isLoggedIn: false,
   token: null,
-  userid: null,
-  email: null,
-  name: null,
-  login: () => {},
+  user: null,
+  setUser: () => {},
+  //   login: () => {},
+  setIsLoggedIn: () => {},
+  setToken: () => {},
   logout: () => {},
 });
 
 export const LoginContextProvider = (props) => {
   const [token, setToken] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [name, setName] = useState(null);
-  const [userid, setUserid] = useState(null);
-  const [email, setEmail] = useState(null);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const verifyToken = async (token) => {
-      try {
-        const user = await axios.get(`${baseBackendUrl}/auth`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        console.log(user.data);
-        if (user.data.status === "success") {
-          return true;
-        }
-        return false;
-      } catch (e) {
-        console.log(e);
-        return false;
+    if (!user || !token) {
+      return;
+    }
+    AsyncStorage.setItem("token", token);
+    AsyncStorage.setItem("user", JSON.stringify(user));
+  }, [token, isLoggedIn, user]);
+
+  useEffect(() => {
+    const checkLogin = async () => {
+      const token = await AsyncStorage.getItem("token");
+      const user = await AsyncStorage.getItem("user");
+      if (token && user) {
+        setToken(token);
+        setUser(JSON.parse(user));
+        setIsLoggedIn(true);
       }
     };
-
-    const checkLoginData = async () => {
-      const userData = await AsyncStorage.getItem("userdata");
-      if (!userData) {
-        return;
-      }
-      const transformedData = JSON.parse(userData);
-      const { token, name, email, userid } = transformedData;
-      const tokenIsValid = await verifyToken(token);
-      if (!tokenIsValid) {
-        return;
-      }
-      setToken(token);
-      setName(name);
-      setEmail(email);
-      setUserid(userid);
-      setIsLoggedIn(true);
-      console.log(userid);
-
-      console.log("data checked");
-    };
-    checkLoginData();
+    checkLogin();
   }, []);
-
-  const loginHandler = async (token, name, userid, email) => {
-    const userData = {
-      token: token,
-      name: name,
-      email: email,
-      userid: userid,
-    };
-
-    setEmail(email);
-    setUserid(userid);
-    setToken(token);
-    setIsLoggedIn(true);
-    setName(name);
-    storeData(userData);
-  };
   const logoutHandler = async () => {
     setToken(null);
-    setEmail(null);
-    setUserid(null);
+    setUser(null);
     setIsLoggedIn(false);
-    setName(null);
-    await AsyncStorage.removeItem("userdata");
     await AsyncStorage.clear();
   };
   const storeData = async (userdata) => {
@@ -99,10 +58,11 @@ export const LoginContextProvider = (props) => {
   const context = {
     token: token,
     isLoggedIn: isLoggedIn,
-    name: name,
-    userid: userid,
-    email: email,
-    login: loginHandler,
+    user: user,
+    // login: loginHandler,
+    setUser: setUser,
+    setIsLoggedIn: setIsLoggedIn,
+    setToken: setToken,
     logout: logoutHandler,
   };
 

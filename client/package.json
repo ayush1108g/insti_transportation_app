@@ -1,5 +1,5 @@
 {
-  "name": "client",
+  "name": "transportation_app",
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
@@ -18,10 +18,14 @@
     "expo-status-bar": "~1.11.1",
     "react": "18.2.0",
     "react-native": "0.73.6",
+    "react-native-animatable": "^1.4.0",
     "react-native-gesture-handler": "~2.14.0",
     "react-native-paper": "^5.12.3",
     "react-native-select-dropdown": "^4.0.0",
-    "react-native-vector-icons": "^10.0.3"
+    "react-native-sound": "^0.11.2",
+    "react-native-vector-icons": "^10.0.3",
+    "react-native-web": "^0.19.10",
+    "socket.io-client": "^4.7.5"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

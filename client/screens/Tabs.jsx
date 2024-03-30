@@ -2,6 +2,9 @@ import { StyleSheet, Text, View } from 'react-native';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 
+import Icon from "react-native-vector-icons/FontAwesome";
+
+
 const Tab = createBottomTabNavigator();
 const AdminStack = createStackNavigator();
 const HomeStack = createStackNavigator();
@@ -10,9 +13,11 @@ const ProfileStack = createStackNavigator();
 
 
 import Admin from './Admin/Admin';
+import SendNotification from './Admin/SendNotification';
 import Home from './Home/Home';
 import Schedule from './Schedule/Schedule';
 import Profile from './Profile/Profile';
+import Notifications from './Profile/Notifications';
 import Booking from './Schedule/Booking';
 
 const AdminNavigator = () => {
@@ -20,6 +25,10 @@ const AdminNavigator = () => {
         <AdminStack.Navigator>
             <AdminStack.Screen name="AdminPage"
                 component={Admin}
+                options={{ headerShown: false }}
+            />
+            <AdminStack.Screen name="SendNotification"
+                component={SendNotification}
                 options={{ headerShown: false }}
             />
         </AdminStack.Navigator>
@@ -30,6 +39,12 @@ const HomeNavigator = () => {
     return (
         <HomeStack.Navigator>
             <HomeStack.Screen name="HomePage" component={Home} options={{ headerShown: false }} />
+
+            <HomeStack.Screen
+                name="Notification"
+                component={Notifications}
+                options={{ headerShown: false }}
+            />
         </HomeStack.Navigator>
     )
 }
@@ -60,11 +75,17 @@ const ProfileNavigator = () => {
                 component={Profile}
                 options={{ headerShown: false }}
             />
+            <ProfileStack.Screen
+                name="Notification"
+                component={Notifications}
+                options={{ headerShown: false }}
+            />
         </ProfileStack.Navigator>
     )
 }
 
 import React from 'react'
+import Notificatios from './Profile/Notifications';
 
 const Tabs = () => {
     return (
@@ -100,6 +121,7 @@ const Tabs = () => {
                 tabBarInactiveTintColor: "black",
             })}
         >
+
             <Tab.Screen name="Home" component={HomeNavigator} />
             <Tab.Screen name="Schedule" component={ScheduleNavigator} />
             <Tab.Screen name="Profile" component={ProfileNavigator} />

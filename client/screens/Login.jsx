@@ -12,82 +12,90 @@ import LoginContext from "../store/AuthContext";
 import axios from "axios";
 import { baseBackendUrl } from "../constant";
 import SelectDropdown from 'react-native-select-dropdown'
-
-const emojisWithIcons = [
+import useSocket from "../store/SocketContext";
+const Roles = [
     { title: 'Select' },
     { title: 'Student' },
     { title: 'Faculty' },
     { title: 'Admin' },
 ];
 
+import { useAlert } from "../store/AlertContext";
+
 const Auth = ({ navigation }) => {
+    const SocketCtx = useSocket();
+    const alertCtx = useAlert();
     const loginctx = useContext(LoginContext);
+    const [isLogin, setIsLogin] = useState(true);
     const [email, setEmail] = useState("");
     const [name, setName] = useState("");
     const [password, setPassword] = useState("");
-    const [isLogin, setIsLogin] = useState(true);
-    const [message, setMessage] = useState("");
     const [role, setRole] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
-    const [phoneFocused, setPhoneFocused] = useState(false);
 
     useEffect(() => {
         if (loginctx.isLoggedIn) {
-            navigation.replace("MyApp");
+            navigation.replace("Tabs");
         }
     }, [loginctx.isLoggedIn]);
 
     const handleLogin = async () => {
-        setMessage("");
+        // alertCtx.showAlert("success", "Login proceed");
+        // SocketCtx.sendMessages({ title: 'Notification from Ayush', message: 'Kaam krlo' });
+        // return;
         if (email.length <= 5 || password.length < 8) {
-            return setMessage("Password must be at least 8 characters long");
+            return alertCtx.showAlert('error', 'Password must be at least 8 characters long');
         }
         console.log("Logging in with:", email, password);
         try {
-            const response = await axios.post(`${baseBackendUrl}/auth/login`, {
+            const response = await axios.post(`${baseBackendUrl}/users/login`, {
                 email: email,
                 password: password,
             });
-            setMessage("Login successful");
+            alertCtx.showAlert('success', 'Login successful');
             console.log(response.data);
-            loginctx.login(
-                response.data.token,
-                response.data.data.user.name,
-                response.data.data.user._id,
-                response.data.data.user.email
-            );
-            navigation.replace("MyApp");
+            loginctx.setUser(response.data.user);
+            loginctx.setToken(response.data.user?._id);
+            loginctx.setIsLoggedIn(true);
         } catch (error) {
             console.log(error);
-            setMessage(error.message);
+            alertCtx.showAlert('error', err.message);
         }
     };
 
     const handleSignup = async () => {
-        setMessage("");
         if (email.length <= 5 || password.length < 8) {
-            return setMessage("Password must be at least 8 characters long");
+            return alertCtx.showAlert('error', 'Password must be at leat 8 chars long');
         }
-        console.log("Signing up with:", name, email, password);
-        console.log(`${baseBackendUrl}/auth/signup`);
+        if (role.length === 0 || role === 'select') {
+            return alertCtx.showAlert('error', 'Please select a role');
+        }
+        if (phoneNumber.length !== 10) {
+            return alertCtx.showAlert('error', 'Please enter a valid phone number');
+        }
+        if (email.split('@')[1] !== 'iitbbs.ac.in') {
+            return alertCtx.showAlert('error', 'Please use your IIT Bhubaneswar email id');
+        }
+
+        console.log("Signing up with:", name, email, password, role, phoneNumber);
+        console.log(`${baseBackendUrl}/users`);
         try {
-            const response = await axios.post(`${baseBackendUrl}/auth/signup`, {
+            const response = await axios.post(`${baseBackendUrl}/users`, {
                 name: name,
                 email: email,
                 password: password,
+                role: role,
+                phoneNumber: phoneNumber
             });
-            setMessage("Signup successful");
+            alertCtx.showAlert('success', "Signup successful")
+            loginctx.setUser(response.data);
+            loginctx.setToken(response.data?._id);
+            loginctx.setIsLoggedIn(true);
             console.log(response.data);
-            loginctx.login(
-                response.data.token,
-                response.data.data.user.name,
-                response.data.data.user._id,
-                response.data.data.user.email
-            );
-            navigation.replace("MyApp");
+
         } catch (error) {
             console.log(error);
-            setMessage(error.message);
+            alertCtx.showAlert('error', error.message);
         }
     };
 
@@ -98,17 +106,19 @@ const Auth = ({ navigation }) => {
     const [emailFocused, setEmailFocused] = useState(false);
     const [nameFocused, setNameFocused] = useState(false);
     const [passwordFocused, setPasswordFocused] = useState(false);
+    const [phoneFocused, setPhoneFocused] = useState(false);
+
 
     return (
         <TouchableWithoutFeedback onPress={dismissKeyboard}>
             <View style={styles.container}>
-                {message.length > 0 && (
+                {/* {message.length > 0 && (
                     <View
                         style={{ padding: 10, backgroundColor: "red", marginBottom: 10 }}
                     >
                         <Text>{message}</Text>
                     </View>
-                )}
+                )} */}
                 <Text style={styles.title}>{isLogin ? "Login" : "Signup"}</Text>
                 {!isLogin && (
                     <View style={styles.inputContainer}>
@@ -194,9 +204,10 @@ const Auth = ({ navigation }) => {
                 {!isLogin && <View style={styles.inputContainer}>
 
                     <SelectDropdown
-                        data={emojisWithIcons}
+                        data={Roles}
                         onSelect={(selectedItem, index) => {
                             console.log(selectedItem, index);
+                            setRole(selectedItem.title.toLowerCase());
                         }}
                         renderButton={(selectedItem, isOpened) => {
                             return (
