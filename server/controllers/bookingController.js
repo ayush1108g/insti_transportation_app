@@ -24,7 +24,7 @@ exports.getBookingById = async (req, res) => {
 };
 
 exports.createBooking = async (req, res) => {
-  const { userId, scheduleId, cost } = req.body;
+  const { userId, scheduleId, cost, paymentMethod } = req.body;
 
   try {
     const schedule = await Schedule.findById(scheduleId);
@@ -43,7 +43,8 @@ exports.createBooking = async (req, res) => {
     const booking = new Booking({
       userId,
       scheduleId,
-      cost
+      cost,
+      paymentMethod
     });
 
     await booking.save();
@@ -54,6 +55,11 @@ exports.createBooking = async (req, res) => {
     }
 
     user.previousRides.push(booking._id);
+    
+    if (paymentMethod === 'payLater') {
+      user.payLater += cost;
+    }
+
     await user.save();
 
     res.status(201).json({ message: 'Booking created successfully' });
@@ -62,6 +68,7 @@ exports.createBooking = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+
 
 exports.updateBooking = async (req, res) => {
   try {

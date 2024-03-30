@@ -1,6 +1,5 @@
 const Schedule = require('../models/busSchedule');
 
-// Get all schedules
 exports.getAllSchedules = async (req, res) => {
   try {
     const schedules = await Schedule.find();
@@ -10,7 +9,6 @@ exports.getAllSchedules = async (req, res) => {
   }
 };
 
-// Get a single schedule by ID
 exports.getScheduleById = async (req, res) => {
   try {
     const schedule = await Schedule.findById(req.params.id);
@@ -23,7 +21,6 @@ exports.getScheduleById = async (req, res) => {
   }
 };
 
-// Create a new schedule
 exports.createSchedule = async (req, res) => {
   const { routeName, startTime, startLocation, endTime, endLocation, busStops } = req.body;
 
@@ -35,7 +32,6 @@ exports.createSchedule = async (req, res) => {
       endTime,
       endLocation,
       busStops
-      // Add additional fields as needed
     });
 
     const savedSchedule = await newSchedule.save();
@@ -45,7 +41,6 @@ exports.createSchedule = async (req, res) => {
   }
 };
 
-// Update a schedule
 exports.updateSchedule = async (req, res) => {
   try {
     const schedule = await Schedule.findById(req.params.id);
@@ -53,7 +48,6 @@ exports.updateSchedule = async (req, res) => {
       return res.status(404).json({ message: 'Schedule not found' });
     }
 
-    // Update only the fields that are sent in the request body
     if (req.body.routeName) {
       schedule.routeName = req.body.routeName;
     }
@@ -72,7 +66,6 @@ exports.updateSchedule = async (req, res) => {
     if (req.body.busStops) {
       schedule.busStops = req.body.busStops;
     }
-    // Update additional fields as needed
 
     const updatedSchedule = await schedule.save();
     res.json(updatedSchedule);
@@ -81,7 +74,6 @@ exports.updateSchedule = async (req, res) => {
   }
 };
 
-// Delete a schedule
 exports.deleteSchedule = async (req, res) => {
   try {
     const schedule = await Schedule.findById(req.params.id);
@@ -95,7 +87,6 @@ exports.deleteSchedule = async (req, res) => {
   }
 };
 
-// Add a stop to a schedule
 exports.addStop = async (req, res) => {
   const { stopName, arrivalTime, cost } = req.body;
   const scheduleId = req.params.id;
@@ -120,7 +111,6 @@ exports.addStop = async (req, res) => {
   }
 };
 
-// Delete a stop from a schedule
 exports.deleteStop = async (req, res) => {
   const scheduleId = req.params.scheduleId;
   const stopId = req.params.stopId;

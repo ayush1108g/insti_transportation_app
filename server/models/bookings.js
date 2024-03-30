@@ -11,19 +11,15 @@ const bookingSchema = new mongoose.Schema({
     ref: 'Schedule',
     required: true
   },
-  // seatNumber: {
-  //   type: Number,
-  //   required: true
-  // },
-  // isConfirmed: {
-  //   type: Boolean,
-  //   default: false
-  // },
   cost: {
     type: Number,
     required: true
   },
-  // Additional fields like payment details, booking status, etc.
+  paymentMethod: {
+    type: String,
+    enum: ['UPI', 'payLater'],
+    required: true
+  },
 }, { timestamps: true });
 
 const Booking = mongoose.model('Booking', bookingSchema);

@@ -30,7 +30,13 @@ const userSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Booking'
   }],
-  // Additional fields like address, profile picture, etc.
+  profilePicture: {
+    type: String
+  },
+  payLater: {
+    type: Number,
+    default: 0
+  }
 }, { timestamps: true });
 
 const User = mongoose.model('User', userSchema);
