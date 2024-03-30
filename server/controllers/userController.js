@@ -1,9 +1,12 @@
 const User = require('../models/user');
 
-exports.login = async (req, res) => {
+const AppError = require('./../utils/appError');
+const catchAsync = require('./../utils/catchAsync');
+const APIFeatures = require('./../utils/apiFeatures');
+
+exports.login = catchAsync(async (req, res) => {
   const { email, password } = req.body;
 
-  try {
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
@@ -14,38 +17,28 @@ exports.login = async (req, res) => {
     }
 
     res.status(200).json({ user });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
-};
+});
 
 
-exports.getAllUsers = async (req, res) => {
-  try {
+
+exports.getAllUsers = catchAsync(async (req, res) => {
+ 
     const users = await User.find();
     res.json(users);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
+});
 
-exports.getUserById = async (req, res) => {
-  try {
+exports.getUserById = catchAsync(async (req, res) => {
+ 
     const user = await User.findById(req.params.id);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
     res.json(user);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
+});
 
-exports.createUser = async (req, res) => {
+exports.createUser = catchAsync(async (req, res) => {
   const { email, password, role, name, phoneNumber } = req.body;
 
-  try {
     const newUser = new User({
       email,
       password,
@@ -56,13 +49,10 @@ exports.createUser = async (req, res) => {
 
     const savedUser = await newUser.save();
     res.status(201).json(savedUser);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-};
+  } );
 
-exports.updateUser = async (req, res) => {
-  try {
+exports.updateUser = catchAsync(async (req, res) => {
+  
     const user = await User.findById(req.params.id);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
@@ -86,36 +76,26 @@ exports.updateUser = async (req, res) => {
 
     const updatedUser = await user.save();
     res.json(updatedUser);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-};
+  } );
 
-exports.deleteUser = async (req, res) => {
-  try {
+exports.deleteUser = catchAsync(async (req, res) => {
+  
     const user = await User.findById(req.params.id);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
     await User.deleteOne({ _id: req.params.id }); 
     res.json({ message: 'User deleted' });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
+  });
 
-exports.getPreviousRides = async (req, res) => {
+exports.getPreviousRides = catchAsync(async (req, res) => {
   const userId = req.params.id; 
 
-  try {
+  
     const user = await User.findById(userId); 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
     res.status(200).json(user.previousRides);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
-};
+  } );

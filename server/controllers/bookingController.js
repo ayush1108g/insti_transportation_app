@@ -2,31 +2,28 @@ const Booking = require('../models/bookings');
 const Schedule = require('../models/busSchedule');
 const User = require('../models/user');
 
-exports.getAllBookings = async (req, res) => {
-  try {
+const AppError = require('./../utils/appError');
+const catchAsync = require('./../utils/catchAsync');
+const APIFeatures = require('./../utils/apiFeatures');
+
+exports.getAllBookings = catchAsync( async (req, res) => {
+  
     const bookings = await Booking.find();
     res.json(bookings);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
+  });
 
-exports.getBookingById = async (req, res) => {
-  try {
+exports.getBookingById = catchAsync(async (req, res) => {
+  
     const booking = await Booking.findById(req.params.id);
     if (!booking) {
       return res.status(404).json({ message: 'Booking not found' });
     }
     res.json(booking);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
+  } );
 
-exports.createBooking = async (req, res) => {
+exports.createBooking = catchAsync(async (req, res) => {
   const { userId, scheduleId, cost, paymentMethod } = req.body;
 
-  try {
     const schedule = await Schedule.findById(scheduleId);
     if (!schedule) {
       return res.status(404).json({ message: 'Schedule not found' });
@@ -63,15 +60,10 @@ exports.createBooking = async (req, res) => {
     await user.save();
 
     res.status(201).json({ message: 'Booking created successfully' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
-};
+  } );
 
 
-exports.updateBooking = async (req, res) => {
-  try {
+exports.updateBooking = catchAsync(async (req, res) => {
     const booking = await Booking.findById(req.params.id);
     if (!booking) {
       return res.status(404).json({ message: 'Booking not found' });
@@ -89,13 +81,9 @@ exports.updateBooking = async (req, res) => {
 
     const updatedBooking = await booking.save();
     res.json(updatedBooking);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-};
+  } );
 
-exports.deleteBooking = async (req, res) => {
-  try {
+exports.deleteBooking = catchAsync(async (req, res) => {
     const booking = await Booking.findById(req.params.id);
     if (!booking) {
       return res.status(404).json({ message: 'Booking not found' });
@@ -112,7 +100,4 @@ exports.deleteBooking = async (req, res) => {
     await booking.deleteOne(); 
 
     res.json({ message: 'Booking deleted' });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
+  } );

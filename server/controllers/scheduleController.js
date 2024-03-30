@@ -1,30 +1,27 @@
 const Schedule = require('../models/busSchedule');
 
-exports.getAllSchedules = async (req, res) => {
-  try {
+const AppError = require('./../utils/appError');
+const catchAsync = require('./../utils/catchAsync');
+const APIFeatures = require('./../utils/apiFeatures');
+
+exports.getAllSchedules = catchAsync(async (req, res) => {
+  
     const schedules = await Schedule.find();
     res.json(schedules);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
+  } );
 
-exports.getScheduleById = async (req, res) => {
-  try {
+exports.getScheduleById = catchAsync(async (req, res) => {
+  
     const schedule = await Schedule.findById(req.params.id);
     if (!schedule) {
       return res.status(404).json({ message: 'Schedule not found' });
     }
     res.json(schedule);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
+  } );
 
-exports.createSchedule = async (req, res) => {
+exports.createSchedule = catchAsync(async (req, res) => {
   const { routeName, startTime, startLocation, endTime, endLocation, busStops } = req.body;
 
-  try {
     const newSchedule = new Schedule({
       routeName,
       startTime,
@@ -36,13 +33,10 @@ exports.createSchedule = async (req, res) => {
 
     const savedSchedule = await newSchedule.save();
     res.status(201).json(savedSchedule);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-};
+  } );
 
-exports.updateSchedule = async (req, res) => {
-  try {
+exports.updateSchedule = catchAsync(async (req, res) => {
+  
     const schedule = await Schedule.findById(req.params.id);
     if (!schedule) {
       return res.status(404).json({ message: 'Schedule not found' });
@@ -69,29 +63,23 @@ exports.updateSchedule = async (req, res) => {
 
     const updatedSchedule = await schedule.save();
     res.json(updatedSchedule);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-};
+  } );
 
-exports.deleteSchedule = async (req, res) => {
-  try {
+exports.deleteSchedule = catchAsync( async (req, res) => {
+  
     const schedule = await Schedule.findById(req.params.id);
     if (!schedule) {
       return res.status(404).json({ message: 'Schedule not found' });
     }
     await schedule.remove();
     res.json({ message: 'Schedule deleted' });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
+  } );
 
-exports.addStop = async (req, res) => {
+exports.addStop = catchAsync( async (req, res) => {
   const { stopName, arrivalTime, cost } = req.body;
   const scheduleId = req.params.id;
 
-  try {
+  
     const schedule = await Schedule.findById(scheduleId);
     if (!schedule) {
       return res.status(404).json({ message: 'Schedule not found' });
@@ -106,16 +94,13 @@ exports.addStop = async (req, res) => {
     schedule.busStops.push(newStop);
     const updatedSchedule = await schedule.save();
     res.json(updatedSchedule);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-};
+  } );
 
-exports.deleteStop = async (req, res) => {
+exports.deleteStop = catchAsync(async (req, res) => {
   const scheduleId = req.params.scheduleId;
   const stopId = req.params.stopId;
 
-  try {
+  
     const schedule = await Schedule.findById(scheduleId);
     if (!schedule) {
       return res.status(404).json({ message: 'Schedule not found' });
@@ -129,7 +114,4 @@ exports.deleteStop = async (req, res) => {
     schedule.busStops.splice(stopIndex, 1);
     const updatedSchedule = await schedule.save();
     res.json(updatedSchedule);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
+  } );
