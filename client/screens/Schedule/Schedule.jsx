@@ -347,16 +347,16 @@ const Schedule = ({ navigation }) => {
                     <Text>Date</Text>
                     <TextInput style={styles.input}></TextInput>
                 </View> */}
-                <View style={styles.button} >
-                    <TouchableOpacity onPress={filterSchedules} disabled={searching}>
+                <TouchableOpacity onPress={filterSchedules} disabled={searching}>
+                    <View style={styles.button} >
 
 
-                        {!searching ? <Text style={{ color: 'white' }}>Search</Text> :
+                            {!searching ? <Text style={{ color: 'white' }}>Search</Text> :
 
-                            <ActivityIndicator animating={true} color='black' size='large' />}
+                                <ActivityIndicator animating={true} color='black' size='large' />}
 
-                    </TouchableOpacity>
-                </View>
+                    </View>
+                </TouchableOpacity>
 
             </View>
             {modalVisible && <ShowRoute isVisible={modalVisible} onClose={() => setModalVisible(false)} stops={stops} Route={passData} />}

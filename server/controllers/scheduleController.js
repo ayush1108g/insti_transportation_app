@@ -134,7 +134,7 @@ exports.deleteStop = catchAsync(async (req, res, next) => {
     }
   });
 
-  const stopIndex = schedule.busStops.findIndex((stop) => stop._id == stopId);
+  const stopIndex = schedule.busStops.findIndex((stop) => stop.stopId == stopId);
   if (stopIndex === -1) {
     return next(new AppError("Bus Stop Not found", 404));
   }

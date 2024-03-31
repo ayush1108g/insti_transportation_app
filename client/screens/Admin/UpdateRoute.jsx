@@ -10,8 +10,6 @@ import {useAlert} from "../../store/AlertContext";
 const vw = (Dimensions.get('window').width) / 100;
 const vh = (Dimensions.get('window').height) / 100;
 
-
-
 const UpdateRoute = ({route, navigation}) => {
     const alertCtx = useAlert();
     const { data,setUpdate } = route.params;
@@ -58,7 +56,7 @@ const UpdateRoute = ({route, navigation}) => {
                 return stations[i]._id;
             }
         }
-        return null; // Return null if stationName is not found
+        return null; 
     }
 
     const submitHandler = async () => {
@@ -66,7 +64,7 @@ const UpdateRoute = ({route, navigation}) => {
             const response = await axios.post(`${baseBackendUrl}/schedules/${data._id}/stops`, {
                 stopId: getStationIdByName(stopName),
                 stopNumber: stopNumber,
-                cost: fare,
+                cost: fare, 
                 arrivalTime: getCorrectTimeStamp(date.toISOString(), time.toISOString())
             });
             setFare('');
@@ -74,6 +72,7 @@ const UpdateRoute = ({route, navigation}) => {
             setStopNumber('');
             setUpdate((prev) => !prev);
             alertCtx.showAlert('success','Stop added successfully');
+            navigation.navigate('Schedule');
             return response.data;
         } catch (error) {
             console.log(error);
@@ -88,19 +87,22 @@ const UpdateRoute = ({route, navigation}) => {
             });
             setUpdate((prev) => !prev);
             alertCtx.showAlert('success','Stop deleted successfully');
+            navigation.navigate('Schedule');
             return response.data;
         } catch (error) {
             console.log(error);
         }
+    }
+    
+    const openUpdateStop = (busStop) => {
+        console.log("busStop", busStop);
+        navigation.navigate('UpdateStop', {data: busStop, scheduleId: data._id});
     }
 
     function arrangeByStopNumber(busStops) {
         return busStops.sort((a, b) => a.stopNumber - b.stopNumber);
     }
 
-    const openUpdateStop = () => {
-        navigation.navigate('UpdateStop');
-    }
 
 
     const formatDate = (timestamp) => {
@@ -157,7 +159,7 @@ const UpdateRoute = ({route, navigation}) => {
                             width: 40*vw,
                             marginTop:15
                         }}
-                        onPress={openUpdateStop}
+                        onPress={()=>openUpdateStop(data)}
                     >
                         <Text style={{color:'white', padding:4}}>Update</Text>
                     </TouchableOpacity>
