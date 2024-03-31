@@ -14,6 +14,8 @@ const ProfileStack = createStackNavigator();
 
 import Admin from './Admin/Admin';
 import SendNotification from './Admin/SendNotification';
+import AddNewStop from './Admin/AddNewStop';
+import AddNewRoute from './Admin/AddNewRoute';
 
 import Home from './Home/Home';
 
@@ -34,6 +36,14 @@ const AdminNavigator = () => {
             />
             <AdminStack.Screen name="SendNotification"
                 component={SendNotification}
+                options={{ headerShown: false }}
+            />
+            <AdminStack.Screen name="AddNewStop"
+                component={AddNewStop}
+                options={{ headerShown: false }}
+            />
+            <AdminStack.Screen name="AddNewRoute"
+                component={AddNewRoute}
                 options={{ headerShown: false }}
             />
         </AdminStack.Navigator>
