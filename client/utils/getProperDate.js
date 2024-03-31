@@ -11,3 +11,5 @@ export const getCorrectTimeStamp = (date, time) => {
   console.log(formatteddate);
   return formatteddate.getTime();
 };
+
+// getCorrectTimeStamp("2021-09-01T15:00:00.000Z", "2021-09-01T10:00:00.000Z");

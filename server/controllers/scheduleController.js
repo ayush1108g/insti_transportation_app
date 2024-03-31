@@ -35,21 +35,21 @@ exports.createSchedule = catchAsync(async (req, res) => {
     cost,
   } = req.body;
 
-  const startAndEndStops = [
-    {
-      stopId: startLocation,
-      stopNumber: 0,
-      arrivalTime: startTime,
-      cost: 0,
-    },
-    {
-      stopId: endLocation,
-      stopNumber: 100,
-      arrivalTime: endTime,
-      cost: cost,
-    },
-  ];
-  busStops.push(...startAndEndStops);
+  // const startAndEndStops = [
+  //   {
+  //     stopId: startLocation,
+  //     stopNumber: 0,
+  //     arrivalTime: startTime,
+  //     cost: 0,
+  //   },
+  //   {
+  //     stopId: endLocation,
+  //     stopNumber: 100,
+  //     arrivalTime: endTime,
+  //     cost: cost,
+  //   },
+  // ];
+  // busStops.push(...startAndEndStops);
 
   const newSchedule = new Schedule({
     routeName,

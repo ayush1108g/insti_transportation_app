@@ -10,7 +10,7 @@ import LoginContext from '../../store/AuthContext';
 
 function formatISTDate(dateString) {
     const utcDate = new Date(dateString);
-    const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
+    const istDate = new Date(utcDate.getTime());
 
     const optionsDate = {
         day: 'numeric',

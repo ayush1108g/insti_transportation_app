@@ -110,7 +110,7 @@ const UpdateRoute = ({route}) => {
         const minutes = dateObj.getMinutes();
         const ampm = hours >= 12 ? 'PM' : 'AM';
         hours = hours % 12;
-        hours = hours ? hours : 12; // Handle midnight (0 hours)
+        hours = hours ? hours : 12; 
 
         const formattedTime = `${hours}.${minutes.toString().padStart(2, '0')} ${ampm}`;
 
