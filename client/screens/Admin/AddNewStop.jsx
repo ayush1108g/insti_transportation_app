@@ -1,21 +1,42 @@
 import { StyleSheet, Text, View ,Dimensions, TextInput, ScrollView , TouchableOpacity} from 'react-native'
 import React, { useEffect, useState } from 'react'
-
+import { baseBackendUrl } from '../../constant';
+import axios from 'axios';
 
 const vw = (Dimensions.get('window').width) / 100;
 const vh = (Dimensions.get('window').height) / 100;
 
 const AddNewStop = () => {
+    const [newStop, setNewStop] = useState('');
+
+    const submitHandler = async () => {
+        console.log(newStop);
+        try {
+            const response = await axios.post(`${baseBackendUrl}/busStations`, {
+                stationName: newStop,
+            });
+            alert('New Bus Station Added');
+            setNewStop('');
+            return response;
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
   return (
-    <View>
-           <Text style={{marginLeft:24*vw , fontSize:7*vw}}>Add New Stop</Text>
+    <View style={{alignItems: 'center'}}>
+           <Text style={{ fontSize:7*vw}}>Add New Bus Station</Text>
               <View style={styles.box1}>
         
                  <View style={styles.box1_1 }>
                     <Text style={{fontWeight:'bold'}}>Stop</Text>
-                    <TextInput style={styles.input}></TextInput>
+                    <TextInput 
+                        style={styles.input} 
+                        onChangeText={(newText) => setNewStop(newText)}
+                        defaultValue={newStop}
+                    ></TextInput>
                 </View>
-                <TouchableOpacity style={styles.button}  >
+                <TouchableOpacity style={styles.button}  onPress={submitHandler}>
                     <Text style={{ color: 'white' }}>Add</Text>
                 </TouchableOpacity>
                 </View>

@@ -1,14 +1,13 @@
 {
   "expo": {
-    "name": "Transportation App",
+    "name": "IITBBS RideEase",
     "slug": "client",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/logo.png",
+    "icon": "./assets/iitbbslogo.png",
     "userInterfaceStyle": "light",
-    "permissions": ["READ_EXTERNAL_STORAGE", "WRITE_EXTERNAL_STORAGE"],
     "splash": {
-      "image": "./assets/logo.png",
+      "image": "./assets/iitbbslogo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -20,12 +19,18 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/logo.png",
+        "foregroundImage": "./assets/iitbbslogo.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.ayush1108g.iitbbstransportapp"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/iitbbslogo.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "899d0ca0-4118-4315-94c6-2d9840412fb0"
+      }
     }
   }
 }

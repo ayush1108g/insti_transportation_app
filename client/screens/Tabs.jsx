@@ -1,6 +1,8 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
+import LoginContext from '../store/AuthContext';
+import { useContext } from 'react';
 
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Ionicons } from '@expo/vector-icons';
@@ -14,6 +16,10 @@ const ProfileStack = createStackNavigator();
 
 import Admin from './Admin/Admin';
 import SendNotification from './Admin/SendNotification';
+import AddNewStop from './Admin/AddNewStop';
+import AddNewRoute from './Admin/AddNewRoute';
+import UpdateRoute from './Admin/UpdateRoute';
+import UpdateStop from './Admin/UpdateStop';
 
 import Home from './Home/Home';
 
@@ -34,6 +40,18 @@ const AdminNavigator = () => {
             />
             <AdminStack.Screen name="SendNotification"
                 component={SendNotification}
+                options={{ headerShown: false }}
+            />
+            <AdminStack.Screen name="AddNewStop"
+                component={AddNewStop}
+                options={{ headerShown: false }}
+            />
+            <AdminStack.Screen name="AddNewRoute"
+                component={AddNewRoute}
+                options={{ headerShown: false }}
+            />
+            <AdminStack.Screen name="UpdateRoute"
+                component={UpdateRoute}
                 options={{ headerShown: false }}
             />
         </AdminStack.Navigator>
@@ -78,6 +96,16 @@ const ScheduleNavigator = () => {
                 component={Ticket}
                 options={{ headerShown: false }}
             />
+            <ScheduleStack.Screen
+                name='UpdateRoute'
+                component={UpdateRoute}
+                options={{ headerShown: false }}
+            />
+            <ScheduleStack.Screen
+                name='UpdateStop'
+                component={UpdateStop}
+                options={{ headerShown: false }}
+            />
         </ScheduleStack.Navigator>
     )
 }
@@ -103,6 +131,7 @@ import React from 'react'
 import Notificatios from './Profile/Notifications';
 
 const Tabs = () => {
+    const loginCtx = useContext(LoginContext);
     return (
         <Tab.Navigator
             screenOptions={({ route, navigation }) => ({
@@ -116,7 +145,7 @@ const Tabs = () => {
                     paddingTop: 10,
                     paddingHorizontal: 10,
                     position: "absolute",
-                    marginBottom:5,
+                    marginBottom: 5,
                     borderRadius: 10,
                     shadowColor: "#000",
                     shadowOpacity: 0.3,
@@ -146,6 +175,8 @@ const Tabs = () => {
                         iconName = focused ? 'person' : 'person-outline';
                     } else if (route.name === 'Admin') {
                         iconName = focused ? 'cog' : 'cog-outline';
+                    } else if (route.name === 'Notification') {
+                        iconName = focused ? 'notifications' : 'notifications-outline';
                     }
 
                     return <Ionicons name={iconName} size={size} color={color} />;
@@ -153,10 +184,11 @@ const Tabs = () => {
             })}
         >
 
-            <Tab.Screen name="Home" component={HomeNavigator} />
+            {/* <Tab.Screen name="Home" component={HomeNavigator} /> */}
             <Tab.Screen name="Schedule" component={ScheduleNavigator} />
             <Tab.Screen name="Profile" component={ProfileNavigator} />
-            <Tab.Screen name="Admin" component={AdminNavigator} />
+            <Tab.Screen name='Notification' component={Notifications} />
+            {LoginContext?.user?.role === 'admin' && <Tab.Screen name="Admin" component={AdminNavigator} />}
         </Tab.Navigator>
     )
 }

@@ -4,18 +4,21 @@ import React from 'react'
 const Admin = ({ navigation }) => {
     return (
         <View style={styles.mainContainer}>
-            <Text>Admin</Text>
+            <Text style={{fontSize:25}}>Admin Workspace</Text>
 
             <View style={styles.innerContainer}>
 
                 <TouchableOpacity style={styles.item} onPress={() => navigation.navigate('SendNotification')}>
                     <Text>Send Notification</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.item}>
-                    <Text>Task 2</Text>
+                <TouchableOpacity style={styles.item} onPress={() => navigation.navigate('AddNewStop')}>
+                    <Text>Add New Bus Station</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.item}>
-                    <Text>Task 3</Text>
+                <TouchableOpacity style={styles.item} onPress={() => navigation.navigate('AddNewRoute')}>
+                    <Text>Schedule a new Bus</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.item} onPress={() => navigation.navigate('Schedule')}>
+                    <Text>Update a Bus Route</Text>
                 </TouchableOpacity>
             </View>
         </View >
@@ -42,7 +45,7 @@ const styles = StyleSheet.create({
     },
     item: {
         width: '40%',
-        borderWidth: 1,
+        borderWidth: 3,
         borderColor: 'black',
         padding: 10,
         margin: 5,

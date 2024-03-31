@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, ActivityIndicator } from "react";
 import {
     View,
     Text,
@@ -32,10 +32,11 @@ const Auth = ({ navigation }) => {
     const [password, setPassword] = useState("");
     const [role, setRole] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        if (loginctx.isLoggedIn) {
-            navigation.replace("Tabs");
+        if (loginctx?.isLoggedIn) {
+            navigation.replace("IITBBS RideEase");
         }
     }, [loginctx.isLoggedIn]);
 
@@ -46,6 +47,7 @@ const Auth = ({ navigation }) => {
         if (email.length <= 5 || password.length < 8) {
             return alertCtx.showAlert('error', 'Password must be at least 8 characters long');
         }
+        setLoading(true);
         console.log("Logging in with:", email, password);
         try {
             const response = await axios.post(`${baseBackendUrl}/users/login`, {
@@ -59,7 +61,9 @@ const Auth = ({ navigation }) => {
             loginctx.setIsLoggedIn(true);
         } catch (error) {
             console.log(error);
-            alertCtx.showAlert('error', err.message);
+            alertCtx.showAlert('error', error.message);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -76,7 +80,7 @@ const Auth = ({ navigation }) => {
         if (email.split('@')[1] !== 'iitbbs.ac.in') {
             return alertCtx.showAlert('error', 'Please use your IIT Bhubaneswar email id');
         }
-
+        setLoading(true);
         console.log("Signing up with:", name, email, password, role, phoneNumber);
         console.log(`${baseBackendUrl}/users`);
         try {
@@ -96,7 +100,10 @@ const Auth = ({ navigation }) => {
         } catch (error) {
             console.log(error);
             alertCtx.showAlert('error', error.message);
+        } finally {
+            setLoading(false);
         }
+
     };
 
     const dismissKeyboard = () => {
@@ -237,9 +244,9 @@ const Auth = ({ navigation }) => {
 
 
                 {isLogin ? (
-                    <Button title="Login" onPress={handleLogin} />
+                    <Button title="Login" onPress={handleLogin} disabled={loading} />
                 ) : (
-                    <Button title="Signup" onPress={handleSignup} />
+                    <Button title="Signup" onPress={handleSignup} disabled={loading} />
                 )}
                 <Text style={styles.toggle} onPress={() => setIsLogin(!isLogin)}>
                     {isLogin

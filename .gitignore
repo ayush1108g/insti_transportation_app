@@ -5,3 +5,4 @@ server/config.env
 server/config.env
 /server/node_modules
 /server/node_modules/mongodb
+/client/android

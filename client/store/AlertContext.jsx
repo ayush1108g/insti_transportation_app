@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState } from "react";
-import Alert from "./../components/alert";
 
 const AlertContext = createContext();
 
@@ -15,9 +14,8 @@ const AlertProvider = ({ children }) => {
     };
 
     return (
-        <AlertContext.Provider value={{ showAlert, hideAlert }}>
+        <AlertContext.Provider value={{ alert, showAlert, hideAlert }}>
             {children}
-            {alert && <Alert type={alert.type} message={alert.message} title={alert.title} />}
         </AlertContext.Provider>
     );
 };

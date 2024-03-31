@@ -7,7 +7,7 @@ const APIFeatures = require("./../utils/apiFeatures");
 exports.login = catchAsync(async (req, res) => {
   const { email, password } = req.body;
 
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email }).select("+password");
   if (!user) {
     return res.status(404).json({ message: "User not found" });
   }
@@ -25,7 +25,7 @@ exports.getAllUsers = catchAsync(async (req, res) => {
 });
 
 exports.getUserById = catchAsync(async (req, res) => {
-  const user = await User.findById(req.params.id);
+  const user = await User.findById(req.params.id).populate("previousRides");
   if (!user) {
     return next(new AppError("User not Found", 404));
   }
@@ -56,9 +56,9 @@ exports.updateUser = catchAsync(async (req, res) => {
   if (req.body.email) {
     user.email = req.body.email;
   }
-  if (req.body.password) {
-    user.password = req.body.password;
-  }
+  // if (req.body.password) {
+  //   user.password = req.body.password;
+  // }
   if (req.body.role) {
     user.role = req.body.role;
   }
