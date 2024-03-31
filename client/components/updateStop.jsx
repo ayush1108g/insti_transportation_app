@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react'
 const vw = (Dimensions.get('window').width) / 100;
 const vh = (Dimensions.get('window').height) / 100;
 
-const updateStop = () => {
+const UpdateStop = () => {
   return (
     <View>
            <Text style={{marginLeft:24*vw , fontSize:7*vw}}>Update stop</Text>
@@ -31,7 +31,7 @@ const updateStop = () => {
   )
 }
 
-export default updateStop
+export default UpdateStop
 
 const styles = StyleSheet.create({
     box1: {

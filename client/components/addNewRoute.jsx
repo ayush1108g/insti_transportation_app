@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react'
 const vw = (Dimensions.get('window').width) / 100;
 const vh = (Dimensions.get('window').height) / 100;
 
-const Home = () => {
+const AddNewRoute= () => {
     const [inputNum, setInputNum] = useState(0);
     const [num,setnum] = useState([]);
     
@@ -70,7 +70,7 @@ const Home = () => {
   )
 }
 
-export default Home
+export default AddNewRoute
 
 const styles = StyleSheet.create({
     box1: {

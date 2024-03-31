@@ -29,7 +29,7 @@ const dummyData = [
 ];
 
 
-const updateRoute = () => {
+const UpdateRoute = () => {
     const CardItem = ({ stationName, fare, arrivalTime }) => {
         return (
             <View style={styles.card}>
@@ -90,7 +90,7 @@ const updateRoute = () => {
     )
 }
 
-export default updateRoute
+export default UpdateRoute
 
 const styles = StyleSheet.create({
     box1: {

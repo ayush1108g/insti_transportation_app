@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react'
 const vw = (Dimensions.get('window').width) / 100;
 const vh = (Dimensions.get('window').height) / 100;
 
-const addNewStop = () => {
+const AddNewStop = () => {
   return (
     <View>
            <Text style={{marginLeft:24*vw , fontSize:7*vw}}>Add New Stop</Text>
@@ -23,7 +23,7 @@ const addNewStop = () => {
   )
 }
 
-export default addNewStop
+export default AddNewStop
 
 const styles = StyleSheet.create({
     box1: {
