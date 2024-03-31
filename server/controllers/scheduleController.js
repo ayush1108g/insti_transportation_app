@@ -4,7 +4,7 @@ const AppError = require("./../utils/appError");
 const catchAsync = require("./../utils/catchAsync");
 const APIFeatures = require("./../utils/apiFeatures");
 
-exports.getAllSchedules = catchAsync(async (req, res) => {
+exports.getAllSchedules = catchAsync(async (req, res, next) => {
   const schedules = await Schedule.find()
     .populate("startLocation")
     .populate("endLocation")
@@ -12,7 +12,7 @@ exports.getAllSchedules = catchAsync(async (req, res) => {
   res.status(200).json(schedules);
 });
 
-exports.getScheduleById = catchAsync(async (req, res) => {
+exports.getScheduleById = catchAsync(async (req, res, next) => {
   const schedule = await Schedule.findById(req.params.id)
     .populate("startLocation")
     .populate("endLocation")
@@ -23,7 +23,7 @@ exports.getScheduleById = catchAsync(async (req, res) => {
   res.status(200).json(schedule);
 });
 
-exports.createSchedule = catchAsync(async (req, res) => {
+exports.createSchedule = catchAsync(async (req, res, next) => {
   const {
     routeName,
     startTime,
@@ -34,22 +34,6 @@ exports.createSchedule = catchAsync(async (req, res) => {
     capacity,
     cost,
   } = req.body;
-
-  // const startAndEndStops = [
-  //   {
-  //     stopId: startLocation,
-  //     stopNumber: 0,
-  //     arrivalTime: startTime,
-  //     cost: 0,
-  //   },
-  //   {
-  //     stopId: endLocation,
-  //     stopNumber: 100,
-  //     arrivalTime: endTime,
-  //     cost: cost,
-  //   },
-  // ];
-  // busStops.push(...startAndEndStops);
 
   const newSchedule = new Schedule({
     routeName,
@@ -66,7 +50,7 @@ exports.createSchedule = catchAsync(async (req, res) => {
   res.status(201).json(savedSchedule);
 });
 
-exports.updateSchedule = catchAsync(async (req, res) => {
+exports.updateSchedule = catchAsync(async (req, res, next) => {
   const schedule = await Schedule.findById(req.params.id);
   if (!schedule) {
     return next(new AppError("Schedule Not found", 404));
@@ -98,7 +82,7 @@ exports.updateSchedule = catchAsync(async (req, res) => {
   res.status(200).json(updatedSchedule);
 });
 
-exports.deleteSchedule = catchAsync(async (req, res) => {
+exports.deleteSchedule = catchAsync(async (req, res, next) => {
   const schedule = await Schedule.findById(req.params.id);
   if (!schedule) {
     return next(new AppError("Schedule Not found", 404));
@@ -107,7 +91,7 @@ exports.deleteSchedule = catchAsync(async (req, res) => {
   res.json({ message: "Schedule deleted" });
 });
 
-exports.addStop = catchAsync(async (req, res) => {
+exports.addStop = catchAsync(async (req, res, next) => {
   const { stopId, arrivalTime, cost, stopNumber } = req.body;
   const scheduleId = req.params.id;
 
@@ -134,7 +118,7 @@ exports.addStop = catchAsync(async (req, res) => {
   res.json(updatedSchedule);
 });
 
-exports.deleteStop = catchAsync(async (req, res) => {
+exports.deleteStop = catchAsync(async (req, res, next) => {
   const scheduleId = req.params.scheduleId;
   const stopId = req.params.stopId;
   const { stopNumber } = req.body;
@@ -160,7 +144,7 @@ exports.deleteStop = catchAsync(async (req, res) => {
   res.status(200).json(updatedSchedule);
 });
 
-exports.updateBusStop = async (req, res) => {
+exports.updateBusStop = async (req, res, next) => {
   try {
     const scheduleId = req.params.scheduleId, stopId = req.params.stopId;
     const { updatedBusStop } = req.body;

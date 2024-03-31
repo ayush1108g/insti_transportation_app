@@ -4,7 +4,7 @@ const AppError = require("./../utils/appError");
 const catchAsync = require("./../utils/catchAsync");
 const APIFeatures = require("./../utils/apiFeatures");
 
-exports.login = catchAsync(async (req, res) => {
+exports.login = catchAsync(async (req, res,next) => {
   const { email, password } = req.body;
 
   const user = await User.findOne({ email }).select("+password");
@@ -19,12 +19,12 @@ exports.login = catchAsync(async (req, res) => {
   res.status(200).json({ user });
 });
 
-exports.getAllUsers = catchAsync(async (req, res) => {
+exports.getAllUsers = catchAsync(async (req, res, next) => {
   const users = await User.find();
   res.json(users);
 });
 
-exports.getUserById = catchAsync(async (req, res) => {
+exports.getUserById = catchAsync(async (req, res, next) => {
   const user = await User.findById(req.params.id).populate("previousRides");
   if (!user) {
     return next(new AppError("User not Found", 404));
@@ -32,7 +32,7 @@ exports.getUserById = catchAsync(async (req, res) => {
   res.json(user);
 });
 
-exports.createUser = catchAsync(async (req, res) => {
+exports.createUser = catchAsync(async (req, res, next) => {
   const { email, password, role, name, phoneNumber } = req.body;
 
   const newUser = new User({
@@ -47,7 +47,7 @@ exports.createUser = catchAsync(async (req, res) => {
   res.status(201).json(savedUser);
 });
 
-exports.updateUser = catchAsync(async (req, res) => {
+exports.updateUser = catchAsync(async (req, res, next) => {
   const user = await User.findById(req.params.id);
   if (!user) {
     return next(new AppError("User not Found", 404));
@@ -73,7 +73,7 @@ exports.updateUser = catchAsync(async (req, res) => {
   res.json(updatedUser);
 });
 
-exports.deleteUser = catchAsync(async (req, res) => {
+exports.deleteUser = catchAsync(async (req, res, next) => {
   const user = await User.findById(req.params.id);
   if (!user) {
     return next(new AppError("User not Found", 404));
@@ -82,7 +82,7 @@ exports.deleteUser = catchAsync(async (req, res) => {
   res.json({ message: "User deleted" });
 });
 
-exports.getPreviousRides = catchAsync(async (req, res) => {
+exports.getPreviousRides = catchAsync(async (req, res, next) => {
   const userId = req.params.id;
 
   const user = await User.findById(userId);

@@ -5,7 +5,7 @@ const AppError = require("../utils/appError");
 const BusStation = require("../models/busStation");
 const Schedule = require("../models/busSchedule");
 
-exports.getPossibleRoutes = catchAsync(async (req, res) => {
+exports.getPossibleRoutes = catchAsync(async (req, res, next) => {
   const possibleRoutes = [];
   const { startLocationId, endLocationId } = req.query;
 

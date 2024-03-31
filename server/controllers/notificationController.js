@@ -4,13 +4,13 @@ const AppError = require('./../utils/appError');
 const catchAsync = require('./../utils/catchAsync');
 const APIFeatures = require('./../utils/apiFeatures');
 
-exports.getAllNotifications = catchAsync(async (req, res) => {
+exports.getAllNotifications = catchAsync(async (req, res, next) => {
   
     const notifications = await Notification.find();
     res.json(notifications);
   } );
 
-exports.getNotificationById = catchAsync( async (req, res) => {
+exports.getNotificationById = catchAsync( async (req, res, next) => {
     const notification = await Notification.findById(req.params.id);
     if (!notification) {
       return next(new AppError('Notification not Found', 404));
@@ -18,7 +18,7 @@ exports.getNotificationById = catchAsync( async (req, res) => {
     res.json(notification);
   } );
 
-exports.createNotification = catchAsync( async (req, res) => {
+exports.createNotification = catchAsync( async (req, res, next) => {
   const { title, message, recipients } = req.body;
 
   
@@ -32,7 +32,7 @@ exports.createNotification = catchAsync( async (req, res) => {
     res.status(201).json(savedNotification);
   } );
 
-exports.updateNotification = catchAsync(async (req, res) => {
+exports.updateNotification = catchAsync(async (req, res, next) => {
   
     const notification = await Notification.findById(req.params.id);
     if (!notification) {
@@ -56,7 +56,7 @@ exports.updateNotification = catchAsync(async (req, res) => {
     res.json(updatedNotification);
   } );
 
-exports.deleteNotification = catchAsync(async (req, res) => {
+exports.deleteNotification = catchAsync(async (req, res, next) => {
 
     const notification = await Notification.findById(req.params.id);
     if (!notification) {

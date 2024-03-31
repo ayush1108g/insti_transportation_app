@@ -4,12 +4,12 @@ const appError = require('../utils/appError');
 
 const BusStation = require('../models/busStation');
 
-exports.getAllBusStations = catchAsync(async (req, res) => {
+exports.getAllBusStations = catchAsync(async (req, res, next) => {
   const busStations = await BusStation.find();
   res.json(busStations);
 });
 
-exports.getBusStationById = catchAsync(async (req, res) => {
+exports.getBusStationById = catchAsync(async (req, res, next) => {
   const busStation = await BusStation.findById(req.params.id);
   if (!busStation) {
     return next(new appError('Bus Station not found', 404));
@@ -17,7 +17,7 @@ exports.getBusStationById = catchAsync(async (req, res) => {
   res.json(busStation);
 });
 
-exports.createBusStation = catchAsync(async (req, res) => {
+exports.createBusStation = catchAsync(async (req, res, next) => {
   const { stationName } = req.body;
 
   const newBusStation = new BusStation({
@@ -28,7 +28,7 @@ exports.createBusStation = catchAsync(async (req, res) => {
   res.status(201).json(savedBusStation);
 });
 
-exports.updateBusStation = catchAsync(async (req, res) => {
+exports.updateBusStation = catchAsync(async (req, res, next) => {
     const busStation = await BusStation.findById(req.params.id);
     if (!busStation) {
         return next(new appError('Bus Station Not found', 404));
@@ -42,7 +42,7 @@ exports.updateBusStation = catchAsync(async (req, res) => {
     res.json(updatedBusStation);
     });
 
-exports.deleteBusStation = catchAsync(async (req, res) => { 
+exports.deleteBusStation = catchAsync(async (req, res, next) => { 
     const busStation = await BusStation.findById(req.params.id);
     if (!busStation) {
         return next(new appError('Bus Station Not found', 404));

@@ -6,13 +6,13 @@ const AppError = require('./../utils/appError');
 const catchAsync = require('./../utils/catchAsync');
 const APIFeatures = require('./../utils/apiFeatures');
 
-exports.getAllBookings = catchAsync( async (req, res) => {
+exports.getAllBookings = catchAsync( async (req, res, next) => {
   
     const bookings = await Booking.find();
     res.json(bookings);
   });
 
-exports.getBookingById = catchAsync(async (req, res) => {
+exports.getBookingById = catchAsync(async (req, res, next) => {
   
     const booking = await Booking.findById(req.params.id);
     if (!booking) {
@@ -21,7 +21,7 @@ exports.getBookingById = catchAsync(async (req, res) => {
     res.json(booking);
   } );
 
-exports.createBooking = catchAsync(async (req, res) => {
+exports.createBooking = catchAsync(async (req, res, next) => {
   const { userId, scheduleId, cost, paymentMethod } = req.body;
 
     const schedule = await Schedule.findById(scheduleId);
@@ -63,7 +63,7 @@ exports.createBooking = catchAsync(async (req, res) => {
   } );
 
 
-exports.updateBooking = catchAsync(async (req, res) => {
+exports.updateBooking = catchAsync(async (req, res, next) => {
     const booking = await Booking.findById(req.params.id);
     if (!booking) {
       return next(new AppError('Booking not found', 404));
@@ -83,7 +83,7 @@ exports.updateBooking = catchAsync(async (req, res) => {
     res.json(updatedBooking);
   } );
 
-exports.deleteBooking = catchAsync(async (req, res) => {
+exports.deleteBooking = catchAsync(async (req, res, next) => {
     const booking = await Booking.findById(req.params.id);
     if (!booking) {
       return next(new AppError('Booking not found', 404));
