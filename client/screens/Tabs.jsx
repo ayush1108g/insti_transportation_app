@@ -1,6 +1,8 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
+import LoginContext from '../store/AuthContext';
+import { useContext } from 'react';
 
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Ionicons } from '@expo/vector-icons';
@@ -123,6 +125,7 @@ import React from 'react'
 import Notificatios from './Profile/Notifications';
 
 const Tabs = () => {
+    const loginCtx = useContext(LoginContext);
     return (
         <Tab.Navigator
             screenOptions={({ route, navigation }) => ({
@@ -166,6 +169,8 @@ const Tabs = () => {
                         iconName = focused ? 'person' : 'person-outline';
                     } else if (route.name === 'Admin') {
                         iconName = focused ? 'cog' : 'cog-outline';
+                    } else if (route.name === 'Notification') {
+                        iconName = focused ? 'notifications' : 'notifications-outline';
                     }
 
                     return <Ionicons name={iconName} size={size} color={color} />;
@@ -173,10 +178,11 @@ const Tabs = () => {
             })}
         >
 
-            <Tab.Screen name="Home" component={HomeNavigator} />
+            {/* <Tab.Screen name="Home" component={HomeNavigator} /> */}
             <Tab.Screen name="Schedule" component={ScheduleNavigator} />
             <Tab.Screen name="Profile" component={ProfileNavigator} />
-            <Tab.Screen name="Admin" component={AdminNavigator} />
+            <Tab.Screen name='Notification' component={Notifications} />
+            {LoginContext?.user?.role === 'admin' && <Tab.Screen name="Admin" component={AdminNavigator} />}
         </Tab.Navigator>
     )
 }

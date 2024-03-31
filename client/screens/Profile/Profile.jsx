@@ -6,7 +6,7 @@ import Stats from './Stats';
 
 const Profile = () => {
     const loginCtx = useContext(LoginContext);
-    console.log(loginCtx.user)
+    console.log(loginCtx?.user)
     return (
         <View style={styles.mainContainer}>
             <Text>Profile</Text>
@@ -23,7 +23,7 @@ const Profile = () => {
                     </View>
                 </View>
             </View>
-            <Button onPress={loginCtx.logout} style={styles.button}>Logout</Button>
+            <Button onPress={loginCtx?.logout} style={styles.button}>Logout</Button>
 
             <ScrollView style={{ paddingTop: 50 }}>
 
