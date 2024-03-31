@@ -6,7 +6,8 @@ https://documenter.getpostman.com/view/33953785/2sA35G52v2
 
 # How to run on Local Device?
 
-To run the app on local device first clone the repository in an empty folder and then open it on Visual Studio Code Editor. Then open terminal and install npm modules. Then  type "cd client" and then run the command "npx expo start". A QR will be generated, scan it using the Expo Go app available on Play Store / App Store to view on your phone OR you can use Android Studio to run the app on an emulator by pressing 'a'.
+To run the app on local device first clone the repository in an empty folder and then open it on Visual Studio Code Editor. Then open terminal and install npm modules. 
+Then  type "cd client" and then run "npm install" and then run the command "npx expo start". A QR will be generated, scan it using the Expo Go app available on Play Store / App Store to view on your phone OR you can use Android Studio to run the app on an emulator by pressing 'a'.
 
 # Login Screen:
 
