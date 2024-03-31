@@ -59,7 +59,7 @@ const Auth = ({ navigation }) => {
             loginctx.setIsLoggedIn(true);
         } catch (error) {
             console.log(error);
-            alertCtx.showAlert('error', err.message);
+            alertCtx.showAlert('error', error.message);
         }
     };
 

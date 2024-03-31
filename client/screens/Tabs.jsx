@@ -16,6 +16,7 @@ import Admin from './Admin/Admin';
 import SendNotification from './Admin/SendNotification';
 import AddNewStop from './Admin/AddNewStop';
 import AddNewRoute from './Admin/AddNewRoute';
+import UpdateRoute from './Admin/UpdateRoute';
 
 import Home from './Home/Home';
 
@@ -44,6 +45,10 @@ const AdminNavigator = () => {
             />
             <AdminStack.Screen name="AddNewRoute"
                 component={AddNewRoute}
+                options={{ headerShown: false }}
+            />
+            <AdminStack.Screen name="UpdateRoute"
+                component={UpdateRoute}
                 options={{ headerShown: false }}
             />
         </AdminStack.Navigator>
@@ -86,6 +91,11 @@ const ScheduleNavigator = () => {
             <ScheduleStack.Screen
                 name='Ticket'
                 component={Ticket}
+                options={{ headerShown: false }}
+            />
+            <ScheduleStack.Screen
+                name='UpdateRoute'
+                component={UpdateRoute}
                 options={{ headerShown: false }}
             />
         </ScheduleStack.Navigator>

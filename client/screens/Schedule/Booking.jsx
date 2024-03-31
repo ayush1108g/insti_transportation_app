@@ -1,7 +1,8 @@
 import { Dimensions, StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity, KeyboardAvoidingView } from 'react-native'
-import { React, useState, useEffect, useRef } from 'react'
+import { React, useState, useEffect, useRef, useContext } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { ScrollView } from 'react-native-gesture-handler';
+import LoginContext from '../../store/AuthContext';
 
 const vw = (Dimensions.get('window').width) / 100;
 const vh = (Dimensions.get('window').height) / 100;
@@ -56,6 +57,9 @@ function findCost(data, startLocation, endLocation) {
 
 
 const Booking = ({ route, navigation }) => {
+
+    const LoginCtx = useContext(LoginContext);
+
     const { data } = route.params;
     // console.log(data);
     // const [cost, setCost] = useState(0);
@@ -78,7 +82,7 @@ const Booking = ({ route, navigation }) => {
     const bookticketHandler = () => {
         navigation.navigate('Payment', { data });
     }
-
+    
     return (
         <ScrollView>
             <KeyboardAvoidingView>

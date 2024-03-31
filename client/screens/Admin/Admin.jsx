@@ -17,8 +17,8 @@ const Admin = ({ navigation }) => {
                 <TouchableOpacity style={styles.item} onPress={() => navigation.navigate('AddNewRoute')}>
                     <Text>Schedule a new Bus</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.item}>
-                    <Text>New Task</Text>
+                <TouchableOpacity style={styles.item} onPress={() => navigation.navigate('UpdateRoute')}>
+                    <Text>Update a Bus Route</Text>
                 </TouchableOpacity>
             </View>
         </View >

@@ -45,6 +45,7 @@ const Schedule = ({ navigation }) => {
     const [schedules, setSchedules] = useState([]);
     const [filteredSchedules, setFilteredSchedules] = useState([]);
     const [searching, setSearching] = useState(false);
+    const [updateUpdateData,setUpdateUpdateData] = useState(false);
 
     const [modalVisible, setModalVisible] = useState(true);
     const [passData, setPassData] = useState({});
@@ -89,7 +90,7 @@ const Schedule = ({ navigation }) => {
             }
         }
         fetchData();
-    }, []);
+    }, [updateUpdateData]);
 
     useEffect(() => {
         const fetchData2 = async () => {
@@ -103,7 +104,7 @@ const Schedule = ({ navigation }) => {
             }
         }
         fetchData2();
-    }, []);
+    }, [updateUpdateData]);
 
     const filterSchedules = async () => {
         setSearching(true);
@@ -124,7 +125,7 @@ const Schedule = ({ navigation }) => {
             const filteredResp = await axios.get(`${baseBackendUrl}/getPossibleRoutes?startLocationId=${fromid}&endLocationId=${toid}`);
             let filtered = filteredResp.data;
             filtered = filtered.filter(schedule => new Date(schedule.startTime).getTime() > new Date().getTime());
-            console.log(filtered);
+            // console.log(filtered);
             setFilteredSchedules(filtered);
         } catch (err) {
             console.log(err);
@@ -145,7 +146,7 @@ const Schedule = ({ navigation }) => {
             return;
         }
 
-    }, [value, valueto]);
+    }, [value, valueto,updateUpdateData]);
 
 
     useEffect(() => {
@@ -158,7 +159,7 @@ const Schedule = ({ navigation }) => {
         } else {
             setFilteredSuggestions([]);
         }
-    }, [value]);
+    }, [value,updateUpdateData]);
 
     useEffect(() => {
         if (valueto.trim() !== '') {
@@ -170,8 +171,23 @@ const Schedule = ({ navigation }) => {
         } else {
             setFilteredSuggestionsto([]);
         }
-    }, [valueto]);
+    }, [valueto,updateUpdateData]);
 
+    const openUpdateRoutePage = (schedule) => {
+        navigation.navigate('UpdateRoute',{data: schedule , setUpdate:setUpdateUpdateData});
+    }
+
+    const deleteRoute = async (id) => {
+        try {
+            const response = await axios.delete(`${baseBackendUrl}/schedules/${id}`);
+            console.log(response.data);
+            const newSchedules = schedules.filter(schedule => schedule._id !== data._id);
+            setSchedules(newSchedules);
+            setFilteredSchedules(newSchedules);
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
     const swapHandler = () => {
         const temp = value;
@@ -210,12 +226,13 @@ const Schedule = ({ navigation }) => {
         const timeGap = Math.abs(new Date(item?.endTime) - new Date(item?.startTime));
         const timeGapInMinutes = Math.floor(timeGap / 60000);
         const timeGapString = `${timeGapInMinutes}min `;
-        console.log(timeGapString);
         item.value = value;
         item.valueto = valueto;
         item.stops = stops;
 
-        return <View style={styles.item} key={index} >
+        return 
+        (
+        <View style={styles.item} key={index} >
             <View style={{
                 position: 'absolute',
                 right: 10,
@@ -265,17 +282,22 @@ const Schedule = ({ navigation }) => {
                         </View>
                     </View>
 
-                </TouchableOpacity>
-                {
-                    isadmin && <View style={{ display: 'flex', flexDirection: 'row' }}>
-                        <Text style={styles.upd}>Update</Text>
-                        <Text style={styles.dlt}>Delete</Text>
-                    </View>
-                }
-            </View>
+            </TouchableOpacity>
+            {
+                isadmin && 
+                <View style={{ display: 'flex', flexDirection: 'row' }}>
+                    <TouchableOpacity style={styles.upd} onPress={() => openUpdateRoutePage(item)}>
+                        <Text style={{color:'white'}}>Update</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.dlt} onPress={() => deleteRoute(item._id)}>
+                        <Text style={{color:'white'}}>Delete</Text>
+                    </TouchableOpacity>
+                </View>
+            }
+        </View>
         </View>
 
-    };
+    )};
 
     return (
         <View style={{ flex: 1, flexDirection: 'column' }}>
