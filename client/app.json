@@ -22,7 +22,7 @@
         "foregroundImage": "./assets/iitbbslogo.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.ayush1108g.iitbbsTransportApp"
+      "package": "com.ayush1108g.iitbbstransportapp"
     },
     "web": {
       "favicon": "./assets/iitbbslogo.png"
