@@ -19,6 +19,7 @@ import SendNotification from './Admin/SendNotification';
 import AddNewStop from './Admin/AddNewStop';
 import AddNewRoute from './Admin/AddNewRoute';
 import UpdateRoute from './Admin/UpdateRoute';
+import UpdateStop from './Admin/UpdateStop';
 
 import Home from './Home/Home';
 
@@ -98,6 +99,11 @@ const ScheduleNavigator = () => {
             <ScheduleStack.Screen
                 name='UpdateRoute'
                 component={UpdateRoute}
+                options={{ headerShown: false }}
+            />
+            <ScheduleStack.Screen
+                name='UpdateStop'
+                component={UpdateStop}
                 options={{ headerShown: false }}
             />
         </ScheduleStack.Navigator>

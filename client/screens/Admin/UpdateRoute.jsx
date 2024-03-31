@@ -12,7 +12,7 @@ const vh = (Dimensions.get('window').height) / 100;
 
 
 
-const UpdateRoute = ({route}) => {
+const UpdateRoute = ({route, navigation}) => {
     const alertCtx = useAlert();
     const { data,setUpdate } = route.params;
 
@@ -98,6 +98,11 @@ const UpdateRoute = ({route}) => {
         return busStops.sort((a, b) => a.stopNumber - b.stopNumber);
     }
 
+    const openUpdateStop = () => {
+        navigation.navigate('UpdateStop');
+    }
+
+
     const formatDate = (timestamp) => {
         const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -123,22 +128,40 @@ const UpdateRoute = ({route}) => {
                 <Text style={styles.stationName}>{data.stopNumber}. {data.stopId.stationName}</Text>
                 <Text style={styles.fare}>Cost: ₹ {data.cost}</Text>
                 <Text style={styles.arrivalTime}>Date & Time: {formatDate(data.arrivalTime)}</Text>
-                <TouchableOpacity 
-                    style={{
-                        backgroundColor: 'green',
-                        color: 'white',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        textAlign: 'center',
-                        padding: 5,
-                        borderRadius: 50,
-                        width: 120,
-                        marginTop:15
-                    }}
-                    onPress={()=>deleteHandler(data)}
-                >
-                    <Text style={{color:'white', padding:4}}>Delete</Text>
-                </TouchableOpacity>
+                <View style={{flexDirection:'row'}}>
+                    <TouchableOpacity 
+                        style={{
+                            backgroundColor: 'green',
+                            color: 'white',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            textAlign: 'center',
+                            padding: 5,
+                            borderRadius: 50,
+                            width: 40*vw,
+                            marginTop:15
+                        }}
+                        onPress={()=>deleteHandler(data)}
+                    >
+                        <Text style={{color:'white', padding:4}}>Delete</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity 
+                        style={{
+                            backgroundColor: 'green',
+                            color: 'white',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            textAlign: 'center',
+                            padding: 5,
+                            borderRadius: 50,
+                            width: 40*vw,
+                            marginTop:15
+                        }}
+                        onPress={openUpdateStop}
+                    >
+                        <Text style={{color:'white', padding:4}}>Update</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         );
     };

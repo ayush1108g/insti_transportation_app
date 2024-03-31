@@ -159,3 +159,35 @@ exports.deleteStop = catchAsync(async (req, res) => {
   const updatedSchedule = await schedule.save();
   res.status(200).json(updatedSchedule);
 });
+
+exports.updateBusStop = async (req, res) => {
+  try {
+    const scheduleId = req.params.scheduleId, stopId = req.params.stopId;
+    const { updatedBusStop } = req.body;
+
+    console.log('scheduleId:', scheduleId, 'stopId:', stopId, 'updatedBusStop:', updatedBusStop);
+
+    const schedule = await Schedule.findById(scheduleId);
+
+    if (!schedule) {
+      return res.status(404).json({ message: 'Schedule not found' });
+    }
+
+    const busStopIndex = schedule.busStops.find(stop => stop.stopId === stopId);
+
+    if (busStopIndex === -1) {
+      return res.status(404).json({ message: 'Bus stop not found' });
+    }
+
+    schedule.busStops[busStopIndex] = { ...schedule.busStops[busStopIndex], ...updatedBusStop };
+
+    const updatedRoute = await schedule.save();
+
+    return res.status(200).json(updatedRoute);
+  } catch (error) {
+    console.error('Error updating bus stop:', error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+
