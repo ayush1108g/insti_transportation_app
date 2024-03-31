@@ -1,5 +1,17 @@
 # IITBBS_GC_TransportationApp
 
+# APP LINK
+https://drive.google.com/file/d/1T86FO9GEb6dK2KjqZDC0wmcqEK0WalUZ/view?usp=sharing
+
+# DUMMY PROFILES for LOGIN
+### STUDENT
+EMAIL: 22mr01096@iitbbs.ac.in
+PASSWORD: 1234567890
+
+### ADMIN
+EMAIL: 22mp01096@iitbbs.ac.in
+PASSWORD: 1234567890
+
 # BACKEND DOCUMENTATION
 
 https://documenter.getpostman.com/view/33953785/2sA35G52v2
