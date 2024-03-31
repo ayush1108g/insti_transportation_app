@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 
 import Icon from "react-native-vector-icons/FontAwesome";
-
+import { Ionicons } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
 const AdminStack = createStackNavigator();
@@ -23,6 +23,7 @@ import Notifications from './Profile/Notifications';
 import Schedule from './Schedule/Schedule';
 import Booking from './Schedule/Booking';
 import Payment from './Schedule/Payment';
+import Ticket from './Schedule/ETicket';
 
 const AdminNavigator = () => {
     return (
@@ -72,6 +73,11 @@ const ScheduleNavigator = () => {
                 component={Payment}
                 options={{ headerShown: false }}
             />
+            <ScheduleStack.Screen
+                name='Ticket'
+                component={Ticket}
+                options={{ headerShown: false }}
+            />
         </ScheduleStack.Navigator>
     )
 }
@@ -110,7 +116,7 @@ const Tabs = () => {
                     paddingTop: 10,
                     paddingHorizontal: 10,
                     position: "absolute",
-                    bottom: 2,
+                    marginBottom:5,
                     borderRadius: 10,
                     shadowColor: "#000",
                     shadowOpacity: 0.3,
@@ -120,7 +126,7 @@ const Tabs = () => {
                     alignContent: "center",
                     justifyContent: "center",
                     width: "100%",
-                    height: 40,
+                    height: 45,
                 },
                 tabBarLabelStyle: {
                     fontSize: 12,
@@ -128,6 +134,22 @@ const Tabs = () => {
                 },
                 tabBarActiveTintColor: "#D41D77",
                 tabBarInactiveTintColor: "black",
+
+                tabBarIcon: ({ focused, color, size }) => {
+                    let iconName;
+
+                    if (route.name === 'Home') {
+                        iconName = focused ? 'home' : 'home-outline';
+                    } else if (route.name === 'Schedule') {
+                        iconName = focused ? 'time' : 'time-outline';
+                    } else if (route.name === 'Profile') {
+                        iconName = focused ? 'person' : 'person-outline';
+                    } else if (route.name === 'Admin') {
+                        iconName = focused ? 'cog' : 'cog-outline';
+                    }
+
+                    return <Ionicons name={iconName} size={size} color={color} />;
+                },
             })}
         >
 

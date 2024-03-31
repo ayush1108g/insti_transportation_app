@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     alert: {
         flexDirection: 'row',
         position: 'absolute',
-        top: 90,
+        top: 75,
         right: 10,
         zIndex: 1000,
         minWidth: 250,

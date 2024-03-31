@@ -103,6 +103,10 @@ const Schedule = ({ navigation }) => {
             setSearching(false);
         }
 
+        setTimeout(() => {
+            setSearching(false);
+        }, 5000);
+
     }
 
 

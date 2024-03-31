@@ -33,7 +33,7 @@ function findCost(data, startLocation, endLocation) {
     let cost = 0;
     if (data?.startLocation?.stationName === startLocation && data?.endLocation?.stationName === endLocation) {
         cost = data.cost;
-        return cost;
+        return { cost: cost, DepartureTime: data.startTime, ArrivalTime: data.endTime };
     }
     const stations = data.busStops;
     console.log(stations);
@@ -41,13 +41,15 @@ function findCost(data, startLocation, endLocation) {
     stations.forEach((station, index) => {
         if (station?.stopId?.stationName === startLocation) {
             cost -= station.cost;
+            data.DepartureTime = station.arrivalTime;
         }
         if (station?.stopId?.stationName === endLocation) {
             cost += station.cost;
+            data.ArrivalTime = station.arrivalTime;
         }
         return 0;
     });
-    return cost;
+    return { cost: cost, DepartureTime: data.DepartureTime, ArrivalTime: data.ArrivalTime };
 }
 
 
@@ -57,12 +59,26 @@ const Booking = ({ route, navigation }) => {
     const { data } = route.params;
     // console.log(data);
     // const [cost, setCost] = useState(0);
+    const obj = findCost(data, data?.value || data?.startLocation?.stationName, data?.valueto || data?.endLocation?.stationName);
+    let costtopay = obj.cost;
+    if (obj.cost <= 0) {
+        costtopay = data?.cost;
+    }
+    data.DepartureTime = obj.DepartureTime;
+    data.ArrivalTime = obj.ArrivalTime;
+    const date = formatISTDate(data?.startTime);
+    const dateString = date.date + ' ' + date.time;
+    data.dateString = dateString;
+
+    data.from = data.value ? data.value : data?.startLocation?.stationName;
+    data.to = data.valueto ? data.valueto : data?.endLocation?.stationName;
+
+    data.costtopay = costtopay;
 
     const bookticketHandler = () => {
         navigation.navigate('Payment', { data });
     }
 
-    const costtopay = findCost(data, data?.value || data?.startLocation?.stationName, data?.valueto || data?.endLocation?.stationName);
     return (
         <ScrollView>
             <KeyboardAvoidingView>
@@ -70,16 +86,16 @@ const Booking = ({ route, navigation }) => {
                 <View style={styles.box1}>
                     <View style={[styles.box1_1, styles.b1]}>
                         <Text style={{ color: 'grey' }}>From</Text>
-                        <Text style={styles.input}>{data.value ? data.value : data?.startLocation?.stationName}</Text>
+                        <Text style={styles.input}>{data.from}</Text>
                     </View>
 
                     <View style={[styles.box1_1, styles.b2]} >
                         <Text style={{ color: 'grey' }}>To</Text>
-                        <Text style={styles.input}>{data.valueto ? data.valueto : data?.endLocation?.stationName}</Text>
+                        <Text style={styles.input}>{data.to}</Text>
                     </View>
                     <View style={styles.box1_1}>
                         <Text style={{ color: 'grey' }}>Date and Time </Text>
-                        <Text style={styles.input}>{formatISTDate(data?.startTime).date} {formatISTDate(data?.startTime).time}</Text>
+                        <Text style={styles.input}>{dateString}</Text>
                     </View>
                     <View style={styles.box1_1}>
                         <Text style={{ color: 'grey' }}>Total Seats </Text>
@@ -105,8 +121,10 @@ const Booking = ({ route, navigation }) => {
                     </View> */}
                     <View style={styles.button} >
                         <TouchableOpacity onPress={bookticketHandler}>
+                            <View style={styles.button} >
 
-                            <Text style={{ color: 'white' }}>Book Now</Text>
+                                <Text style={{ color: 'white' }}>Book Now</Text>
+                            </View>
                         </TouchableOpacity>
                     </View>
                 </View>

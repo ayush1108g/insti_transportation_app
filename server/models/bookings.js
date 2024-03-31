@@ -21,7 +21,7 @@ const bookingSchema = new mongoose.Schema(
     },
     paymentMethod: {
       type: String,
-      enum: ["Other", "payLater"],
+      enum: ["other", "payLater"],
       required: true,
     },
   },

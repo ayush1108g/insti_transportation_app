@@ -16,6 +16,7 @@ const busStationRouter = require("./routes/busStation");
 const possibleRoutesRouter = require("./routes/possibleRoutesRouter");
 const notificationRouter = require("./routes/notifications");
 const globalErrorHandler = require("./controllers/errorController");
+const AppError = require("./utils/appError");
 
 app.use(
   cors({
