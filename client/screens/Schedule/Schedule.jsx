@@ -57,7 +57,7 @@ const Schedule = ({ navigation }) => {
         Animated.loop(
             Animated.sequence([
                 Animated.timing(scaleAnim, {
-                    toValue: 1.3,
+                    toValue: 1.4,
                     duration: 2000,
                     useNativeDriver: true,
                 }),

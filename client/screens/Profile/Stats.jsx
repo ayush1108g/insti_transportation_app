@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { PieChart } from "react-native-gifted-charts";
 import LoginContext from '../../store/AuthContext';
@@ -18,23 +19,24 @@ const Stats = ({ navigation }) => {
     ];
     const [PieChartData, setPieChartData] = useState(chartData);
 
-
-    useEffect(() => {
-        const id = loginCtx.user._id;
-        const fetchData = async () => {
-            try {
-                const resp = await axios.get(baseBackendUrl + '/users/' + id);
-                setData(resp.data);
-                setPreviousRides(resp.data?.previousRides);
-            } catch (err) {
-                alertCtx.showAlert(err.message, 'error');
+    useFocusEffect(
+        useCallback(() => {
+            const id = loginCtx?.user?._id;
+            const fetchData = async () => {
+                try {
+                    const resp = await axios.get(baseBackendUrl + '/users/' + id);
+                    setData(resp.data);
+                    setPreviousRides(resp.data?.previousRides);
+                } catch (err) {
+                    alertCtx.showAlert(err.message, 'error');
+                }
             }
-        }
-        fetchData();
-    }, [loginCtx.user]);
+            fetchData();
+        }, [loginCtx?.user])
+    );
 
     useEffect(() => {
-        chartData[0].value = data?.payLater || 1;
+        chartData[0].value = data?.payLater || 0.0001;
         chartData[1].value = previousRides.reduce((total, ride) => {
             if (ride.paymentMethod === 'other') {
                 return total + ride.cost;
@@ -43,8 +45,8 @@ const Stats = ({ navigation }) => {
         }, 0);
         console.log(previousRides);
         console.log(chartData);
-        chartData[0].text = '₹' + chartData[0].value;
-        chartData[1].text = '₹' + chartData[1].value;
+        chartData[0].text = '₹' + chartData[0]?.value.toFixed(2);
+        chartData[1].text = '₹' + chartData[1]?.value.toFixed(2);
         setPieChartData(chartData);
     }, [data, previousRides]);
 
@@ -58,7 +60,7 @@ const Stats = ({ navigation }) => {
                 fontWeight: 'bold',
             }}>Payment Summary</Text></View>
             <View style={{ flex: 1, justifyContent: 'center' }}>
-                <PieChart
+                {!(PieChartData[0].value === 0 && PieChartData[1].value === 0) && <PieChart
                     donut
                     isThreeD
                     showText
@@ -70,7 +72,7 @@ const Stats = ({ navigation }) => {
                     showTextBackground
                     textBackgroundRadius={26}
                     data={PieChartData}
-                />
+                />}
             </View>
             <View style={{
                 flex: 1, justifyContent: 'center', alignItems: 'start', paddingHorizontal: 20,

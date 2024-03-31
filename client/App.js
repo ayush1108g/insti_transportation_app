@@ -4,20 +4,20 @@ import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import Icon from "react-native-vector-icons/FontAwesome";
+// import Icon from "react-native-vector-icons/FontAwesome";
 import { Button, Provider as PaperProvider } from "react-native-paper";
 
 import LoginContext, { LoginContextProvider } from "./store/AuthContext";
-import { AlertProvider } from "./store/AlertContext";
+import { useAlert, AlertProvider } from "./store/AlertContext";
 import { SocketContextProvider } from "./store/SocketContext";
-import {
-  requestPermissions,
-  scheduleNotificationHandler,
-} from "./store/NotificationLocal";
+// import {
+//   requestPermissions,
+//   scheduleNotificationHandler,
+// } from "./store/NotificationLocal";
+import Alert from "./components/alert";
 
-import { Platform } from "react-native";
-import { Permissions } from "expo";
-// import * as Permissions from "expo-permissions";
+// import { Platform } from "react-native";
+// import { Permissions } from "expo";
 
 import Login from "./screens/Login";
 import Tabs from "./screens/Tabs";
@@ -53,10 +53,10 @@ export default function AppExtended() {
 const App = () => {
   const LoginCtx = useContext(LoginContext);
   const navigation = useNavigation();
-
-  useEffect(() => {
-    requestPermissions();
-  }, []);
+  const alertCtx = useAlert();
+  // useEffect(() => {
+  //   requestPermissions();
+  // }, []);
 
   // useEffect(() => {
   //   requestFilesystemPermission();
@@ -65,25 +65,32 @@ const App = () => {
   return (
     <View style={styles.mainContainer}>
       <PaperProvider>
+        {alertCtx.alert && (
+          <Alert
+            type={alertCtx.alert.type}
+            message={alertCtx.alert.message}
+            title={alertCtx.alert.title}
+          />
+        )}
         <Stack.Navigator>
           {!LoginCtx.isLoggedIn && (
             <Stack.Screen name="Login" component={Login} />
           )}
           {LoginCtx.isLoggedIn && (
             <Stack.Screen
-              name="Tabs"
+              name="IITBBS RideEase"
               component={Tabs}
-              options={{
-                headerRight: () => (
-                  <Icon.Button
-                    name="bell-o"
-                    color="black"
-                    backgroundColor="white"
-                    onPress={() => navigation.navigate("Notification")}
-                    style={{ marginLeft: 10 }}
-                  />
-                ),
-              }}
+              // options={{
+              //   headerRight: () => (
+              //     <Icon.Button
+              //       name="bell-o"
+              //       color="black"
+              //       backgroundColor="white"
+              //       onPress={() => navigation.navigate("Notification")}
+              //       style={{ marginLeft: 10 }}
+              //     />
+              //   ),
+              // }}
             />
           )}
         </Stack.Navigator>

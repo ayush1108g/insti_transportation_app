@@ -35,9 +35,9 @@ export default function Payment({ route, navigation }) {
         data.transactionId = transactionId;
         try {
             const res = await axios.post(baseBackendUrl + "/bookings", {
-                userId: LoginCtx.user._id,
-                scheduleId: data._id,
-                cost: data.costtopay,
+                userId: LoginCtx?.user?._id,
+                scheduleId: data?._id,
+                cost: data?.costtopay,
                 paymentMethod: data.paymentMode === 'upi' ? 'other' : 'payLater',
                 transactionId: transactionId,
             });
@@ -92,7 +92,7 @@ export default function Payment({ route, navigation }) {
 
                 <Button title="Submit" onPress={schedulePostHandler} disabled={loading} />
             </View>}
-            {!isStudent && <View style={styles.salary}><TouchableOpacity onPress={() => paymentHandler('payLater')}><View style={styles.salary}><Text style={styles.text}>Pay Later</Text></View></TouchableOpacity></View>}
+            {<View style={styles.salary}><TouchableOpacity onPress={() => paymentHandler('payLater')}><View style={styles.salary}><Text style={styles.text}>Pay Later</Text></View></TouchableOpacity></View>}
         </View>
     )
 }
