@@ -92,7 +92,7 @@ export default function Payment({ route, navigation }) {
 
                 <Button title="Submit" onPress={schedulePostHandler} disabled={loading} />
             </View>}
-            {!isStudent && <View style={styles.salary}><TouchableOpacity onPress={() => paymentHandler('payLater')}><View style={styles.salary}><Text style={styles.text}>Pay Later</Text></View></TouchableOpacity></View>}
+            {<View style={styles.salary}><TouchableOpacity onPress={() => paymentHandler('payLater')}><View style={styles.salary}><Text style={styles.text}>Pay Later</Text></View></TouchableOpacity></View>}
         </View>
     )
 }

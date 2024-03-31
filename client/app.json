@@ -7,7 +7,7 @@
     "icon": "./assets/iitbbslogo.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/iitbbslogo.png",
+      "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },

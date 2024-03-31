@@ -25,11 +25,14 @@ import Home from './Home/Home';
 
 import Profile from './Profile/Profile';
 import Notifications from './Profile/Notifications';
+import UpdateProfile from './Profile/UpdateProfile';
 
 import Schedule from './Schedule/Schedule';
 import Booking from './Schedule/Booking';
 import Payment from './Schedule/Payment';
-import Ticket from './Schedule/eTicket';
+import Ticket from './Schedule/ETicket';
+
+import Map from './Map/Map';
 
 const AdminNavigator = () => {
     return (
@@ -123,12 +126,14 @@ const ProfileNavigator = () => {
                 component={Notifications}
                 options={{ headerShown: false }}
             />
+            <ProfileStack.Screen
+                name="UpdateProfile"
+                component={UpdateProfile}
+                options={{ headerShown: false }}
+            />
         </ProfileStack.Navigator>
     )
 }
-
-import React from 'react'
-import Notificatios from './Profile/Notifications';
 
 const Tabs = () => {
     const loginCtx = useContext(LoginContext);
@@ -177,6 +182,8 @@ const Tabs = () => {
                         iconName = focused ? 'cog' : 'cog-outline';
                     } else if (route.name === 'Notification') {
                         iconName = focused ? 'notifications' : 'notifications-outline';
+                    } else if (route.name === 'Map') {
+                        iconName = focused ? 'map' : 'map-outline';
                     }
 
                     return <Ionicons name={iconName} size={size} color={color} />;
@@ -186,9 +193,10 @@ const Tabs = () => {
 
             {/* <Tab.Screen name="Home" component={HomeNavigator} /> */}
             <Tab.Screen name="Schedule" component={ScheduleNavigator} />
+            <Tab.Screen name="Map" component={Map} />
             <Tab.Screen name="Profile" component={ProfileNavigator} />
             <Tab.Screen name='Notification' component={Notifications} />
-            {LoginContext?.user?.role === 'admin' && <Tab.Screen name="Admin" component={AdminNavigator} />}
+            {loginCtx?.user?.role === 'admin' && <Tab.Screen name="Admin" component={AdminNavigator} />}
         </Tab.Navigator>
     )
 }

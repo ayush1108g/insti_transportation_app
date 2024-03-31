@@ -1,15 +1,32 @@
-import { StyleSheet, Text, View, Image, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity } from 'react-native'
 import React, { useContext } from 'react'
 import LoginContext from '../../store/AuthContext'
 import { Button } from 'react-native-paper';
 import Stats from './Stats';
 
-const Profile = () => {
+const Profile = ({ navigation }) => {
     const loginCtx = useContext(LoginContext);
     console.log(loginCtx?.user)
     return (
         <View style={styles.mainContainer}>
-            <Text>Profile</Text>
+            <View style={{
+                // flex: 1,
+                // justifyContent: 'center',
+                // alignItems: 'center',
+            }}>
+                <Text>Profile</Text>
+                <View style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    padding: 10,
+                    width: '30%',
+                    backgroundColor: 'cyan',
+                    position: 'absolute',
+                    right: 0,
+                    borderRadius: 30,
+                }}><TouchableOpacity onPress={() => navigation.navigate('UpdateProfile')}><Text>Edit Profile</Text></TouchableOpacity></View>
+            </View>
             <View style={{ display: 'flex', flexDirection: 'row' }}>
 
                 <View style={{ padding: 5 }}>
