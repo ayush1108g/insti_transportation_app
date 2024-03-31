@@ -137,6 +137,7 @@ exports.addStop = catchAsync(async (req, res) => {
 exports.deleteStop = catchAsync(async (req, res) => {
   const scheduleId = req.params.scheduleId;
   const stopId = req.params.stopId;
+  const { stopNumber } = req.body;
 
   const schedule = await Schedule.findById(scheduleId);
   if (!schedule) {

@@ -6,8 +6,9 @@ import axios from 'axios'
 import LoginContext from '../../store/AuthContext';
 const vw = (Dimensions.get('window').width) / 100;
 const vh = (Dimensions.get('window').height) / 100;
-
-
+import ShowRoute from '../../components/ShowRooute';
+import { Animated } from 'react-native';
+import Icon2 from 'react-native-vector-icons/FontAwesome5';
 
 function formatISTDate(dateString) {
     const utcDate = new Date(dateString);
@@ -44,6 +45,34 @@ const Schedule = ({ navigation }) => {
     const [schedules, setSchedules] = useState([]);
     const [filteredSchedules, setFilteredSchedules] = useState([]);
     const [searching, setSearching] = useState(false);
+
+    const [modalVisible, setModalVisible] = useState(true);
+    const [passData, setPassData] = useState({});
+
+
+    const scaleAnim = useRef(new Animated.Value(1)).current;
+
+    const startAnimation = () => {
+        Animated.loop(
+            Animated.sequence([
+                Animated.timing(scaleAnim, {
+                    toValue: 1.3,
+                    duration: 2000,
+                    useNativeDriver: true,
+                }),
+                Animated.timing(scaleAnim, {
+                    toValue: 1,
+                    duration: 2000,
+                    useNativeDriver: true,
+                }),
+            ]),
+        ).start();
+    };
+
+    useEffect(() => {
+        startAnimation();
+    }, []);
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -172,6 +201,11 @@ const Schedule = ({ navigation }) => {
         </TouchableOpacity>
     );
 
+    const handleRoutePress = (item) => {
+        setPassData(item);
+        setModalVisible(true);
+    }
+
     const renderItem = ({ item, index }) => {
         const timeGap = Math.abs(new Date(item?.endTime) - new Date(item?.startTime));
         const timeGapInMinutes = Math.floor(timeGap / 60000);
@@ -182,39 +216,63 @@ const Schedule = ({ navigation }) => {
         item.stops = stops;
 
         return <View style={styles.item} key={index} >
-            <TouchableOpacity onPress={() => { return navigation.navigate('Booking', { data: item }) }}>
+            <View style={{
+                position: 'absolute',
+                right: 10,
+                top: 10,
+                zIndex: 5
+            }}>
 
-                <Text style={styles.busNumber}>{item?.routeName}</Text>
-                <Text>{formatISTDate(item?.startTime).date}</Text>
-                <View style={styles.l2}>
-                    <View style={styles.Comp1}>
-                        <Text style={styles.place} >{item?.startLocation?.stationName}</Text>
-                        <Text style={styles.time} >{formatISTDate(item?.startTime).time}</Text>
-                    </View>
-                    <View style={styles.Compmid}>
-                        <View style={styles.w0l}>
-                        </View >
-                        <View style={styles.smbx}>
-                            <Text>{timeGapString}</Text>
-
+                <TouchableOpacity onPress={() => handleRoutePress(item)}>
+                    <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
+                        <View style={{
+                            position: 'relative',
+                            top: 0,
+                            right: 0,
+                            width: 40,
+                            zIndex: 100,
+                        }}>
+                            <Icon2 onPress={() => handleRoutePress(item)} name='route' size={30} ></Icon2>
                         </View>
-                        <View style={styles.w0r}>
+                    </Animated.View>
+                </TouchableOpacity>
+            </View>
 
+            <View >
+
+                <TouchableOpacity onPress={() => { return navigation.navigate('Booking', { data: item }) }}>
+                    <Text style={styles.busNumber}>{item?.routeName}</Text>
+                    <Text>{formatISTDate(item?.startTime).date}</Text>
+                    <View style={styles.l2}>
+                        <View style={styles.Comp1}>
+                            <Text style={styles.place} >{item?.startLocation?.stationName}</Text>
+                            <Text style={styles.time} >{formatISTDate(item?.startTime).time}</Text>
+                        </View>
+                        <View style={styles.Compmid}>
+                            <View style={styles.w0l}>
+                            </View >
+                            <View style={styles.smbx}>
+                                <Text>{timeGapString}</Text>
+
+                            </View>
+                            <View style={styles.w0r}>
+
+                            </View>
+                        </View>
+                        <View style={styles.Comp2}>
+                            <Text style={styles.place}>{item?.endLocation?.stationName}</Text>
+                            <Text style={styles.time}>{formatISTDate(item?.endTime).time}</Text>
                         </View>
                     </View>
-                    <View style={styles.Comp2}>
-                        <Text style={styles.place}>{item?.endLocation?.stationName}</Text>
-                        <Text style={styles.time}>{formatISTDate(item?.endTime).time}</Text>
-                    </View>
-                </View>
 
-            </TouchableOpacity>
-            {
-                isadmin && <View style={{ display: 'flex', flexDirection: 'row' }}>
-                    <Text style={styles.upd}>Update</Text>
-                    <Text style={styles.dlt}>Delete</Text>
-                </View>
-            }
+                </TouchableOpacity>
+                {
+                    isadmin && <View style={{ display: 'flex', flexDirection: 'row' }}>
+                        <Text style={styles.upd}>Update</Text>
+                        <Text style={styles.dlt}>Delete</Text>
+                    </View>
+                }
+            </View>
         </View>
 
     };
@@ -278,8 +336,9 @@ const Schedule = ({ navigation }) => {
 
                     </TouchableOpacity>
                 </View>
-            </View>
 
+            </View>
+            {modalVisible && <ShowRoute isVisible={modalVisible} onClose={() => setModalVisible(false)} stops={stops} Route={passData} />}
             <FlatList
                 data={filteredSchedules}
                 renderItem={renderItem}

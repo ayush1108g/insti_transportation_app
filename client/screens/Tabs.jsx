@@ -25,7 +25,7 @@ import Notifications from './Profile/Notifications';
 import Schedule from './Schedule/Schedule';
 import Booking from './Schedule/Booking';
 import Payment from './Schedule/Payment';
-import Ticket from './Schedule/ETicket';
+import Ticket from './Schedule/eTicket';
 
 const AdminNavigator = () => {
     return (
@@ -126,7 +126,7 @@ const Tabs = () => {
                     paddingTop: 10,
                     paddingHorizontal: 10,
                     position: "absolute",
-                    marginBottom:5,
+                    marginBottom: 5,
                     borderRadius: 10,
                     shadowColor: "#000",
                     shadowOpacity: 0.3,
