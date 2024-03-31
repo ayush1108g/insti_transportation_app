@@ -25,8 +25,11 @@ const Home = () => {
         return(
         <View style={styles.stops}>
             <Text>Stop {ind}</Text>
-            <TextInput style={styles.input}></TextInput>
-
+            <TextInput style={styles.input2}></TextInput>
+            <Text>Fare from Start point</Text>
+            <TextInput style={styles.input2}></TextInput>
+            <Text>Time of arrival</Text>
+            <TextInput style={styles.input2}></TextInput>
         </View>
     )};
 
@@ -35,13 +38,13 @@ const Home = () => {
         <Text style={{marginLeft:24*vw , fontSize:7*vw}}>Add New Route</Text>
     <View style={styles.box1}>
         
-                 <View style={styles.box1_1}>
+                 <View style={styles.box1_1 }>
                     <Text style={{fontWeight:'bold'}}>BusNumber</Text>
                     <TextInput style={styles.input}></TextInput>
                 </View>
                  <View style={styles.box1_1}>
                     <Text style={{fontWeight:'bold'}}>Number of Stations</Text>
-                    <TextInput style={styles.input} keyboardType='numeric' onChangeText={handleInputChange}></TextInput>
+                    <TextInput style={styles.input} keyboardType='numeric'maxLength={2}  onChangeText={handleInputChange}></TextInput>
                 </View>
                 <TouchableOpacity style={styles.button}  onPress={Nextpress} >
                     <Text style={{ color: 'white' }}>Next</Text>
@@ -55,7 +58,7 @@ const Home = () => {
                 {
                     num.length>0&&
                  <View style={styles.button}>
-                      Add
+                      <Text style={{color:'white'}}>Submit</Text>
                       </View>
                   }
                 </ScrollView>
@@ -128,4 +131,27 @@ const styles = StyleSheet.create({
         shadowRadius: 3.84,
         elevation: 5,
     },
+    input2: {
+        height: 40,
+        borderColor: 'gray',
+        borderBottomWidth: 1,
+        padding: 10,
+        marginBottom: 10,
+           color:'grey',
+           borderRadius:10,
+    },
+    stops:{
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        margin: 10,
+        padding: 20,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    }
 })
