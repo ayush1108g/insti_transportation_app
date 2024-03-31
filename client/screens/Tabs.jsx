@@ -26,7 +26,7 @@ import Notifications from './Profile/Notifications';
 import Schedule from './Schedule/Schedule';
 import Booking from './Schedule/Booking';
 import Payment from './Schedule/Payment';
-import Ticket from './Schedule/eTicket';
+import Ticket from './Schedule/ETicket';
 
 const AdminNavigator = () => {
     return (

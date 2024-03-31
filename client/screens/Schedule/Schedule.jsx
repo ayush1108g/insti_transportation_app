@@ -47,7 +47,7 @@ const Schedule = ({ navigation }) => {
     const [searching, setSearching] = useState(false);
     const [updateUpdateData,setUpdateUpdateData] = useState(false);
 
-    const [modalVisible, setModalVisible] = useState(true);
+    const [modalVisible, setModalVisible] = useState(false);
     const [passData, setPassData] = useState({});
 
 
@@ -230,8 +230,7 @@ const Schedule = ({ navigation }) => {
         item.valueto = valueto;
         item.stops = stops;
 
-        return 
-        (
+        return (
         <View style={styles.item} key={index} >
             <View style={{
                 position: 'absolute',

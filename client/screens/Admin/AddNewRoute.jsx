@@ -1,6 +1,9 @@
 import { StyleSheet, Text, View, Dimensions, TextInput, ScrollView, TouchableOpacity } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { baseBackendUrl } from '../../constant';
 
+import AddNewRouteCard from '../../components/AddNewRouteCard';
 
 const vw = (Dimensions.get('window').width) / 100;
 const vh = (Dimensions.get('window').height) / 100;
@@ -8,6 +11,48 @@ const vh = (Dimensions.get('window').height) / 100;
 const AddNewRoute = () => {
     const [inputNum, setInputNum] = useState(0);
     const [num, setnum] = useState([]);
+
+    const [busName, setBusName] = useState(null);
+    const [busCapacity, setBusCapacity] = useState('');
+    const [busStops, setBusStops] = useState([]);
+
+    function sortBusStops(busStops) {
+        const sortedStops = busStops.slice().sort((a, b) => a.stopNumber - b.stopNumber);
+
+        const start = {
+            stopId: sortedStops[0].stopId,
+            arrivalTime: sortedStops[0].arrivalTime
+        };
+
+        const end = {
+            stopId: sortedStops[sortedStops.length - 1].stopId,
+            arrivalTime: sortedStops[sortedStops.length - 1].arrivalTime,
+            cost: sortedStops[sortedStops.length - 1].cost 
+        };
+
+        return { start, end };
+    }
+
+    const submitHandler = async () => {
+        const { start , end } = sortBusStops(busStops); 
+        console.log(busName, busCapacity, busStops, start, end);
+        try {
+            const response = await axios.post(`${baseBackendUrl}/schedules`, {
+                routeName: busName,
+                capacity: busCapacity,
+                busStops,
+                startLocation: start.stopId,
+                endLocation: end.stopId,
+                startTime: start.arrivalTime,
+                endTime: end.arrivalTime,
+                cost: end.cost
+            });
+            alert('New Bus Schedule added successfully');
+            return response.data;
+        } catch(err) {
+            console.log(err);
+        }
+    };
 
     const handleInputChange = (text) => {
         setInputNum(text);
@@ -21,31 +66,40 @@ const AddNewRoute = () => {
     }
 
     const renderItem = (ind, index) => {
-        console.log(ind);
         return (
-            <View style={styles.stops} key={index}>
-                <Text>Stop {ind}</Text>
-                <TextInput style={styles.input2}></TextInput>
-                <Text>Fare from Start point</Text>
-                <TextInput style={styles.input2}></TextInput>
-                <Text>Time of arrival</Text>
-                <TextInput style={styles.input2}></TextInput>
-            </View>
-        )
+            <AddNewRouteCard ind={ind} busStops={busStops}/>
+        );
     };
 
     return (
-        <View>
-            <Text style={{ marginLeft: 24 * vw, fontSize: 7 * vw }}>Add New Route</Text>
+        <View style={{alignItems: 'center'}}>
+            <Text style={{fontSize:24}}>Schedule a new Bus</Text>
             <View style={styles.box1}>
 
                 <View style={styles.box1_1}>
-                    <Text style={{ fontWeight: 'bold' }}>BusNumber</Text>
-                    <TextInput style={styles.input}></TextInput>
+                    <Text style={{ fontWeight: 'bold' }}>Bus / Route Name</Text>
+                    <TextInput 
+                        style={styles.input}
+                        value={busName}
+                        onChangeText={(text) => setBusName(text)}>
+                    </TextInput>
                 </View>
                 <View style={styles.box1_1}>
-                    <Text style={{ fontWeight: 'bold' }}>Number of Stations</Text>
-                    <TextInput style={styles.input} keyboardType='numeric' maxLength={2} onChangeText={handleInputChange}></TextInput>
+                    <Text style={{ fontWeight: 'bold' }}>Bus capacity</Text>
+                    <TextInput 
+                        style={styles.input}
+                        value={busCapacity}
+                        onChangeText={(text)=>setBusCapacity(text)}>
+                    </TextInput>
+                </View>
+                <View style={styles.box1_1}>
+                    <Text style={{ fontWeight: 'bold' }}>Number of Stops</Text>
+                    <TextInput 
+                        style={styles.input} 
+                        keyboardType='numeric' 
+                        maxLength={2} 
+                        onChangeText={handleInputChange}>
+                    </TextInput>
                 </View>
                 <TouchableOpacity style={styles.button} onPress={Nextpress} >
                     <Text style={{ color: 'white' }}>Next</Text>
@@ -58,9 +112,9 @@ const AddNewRoute = () => {
                     }
                     {
                         num.length > 0 &&
-                        <View style={styles.button}>
+                        <TouchableOpacity style={styles.button} onPress={submitHandler}>
                             <Text style={{ color: 'white' }}>Submit</Text>
-                        </View>
+                        </TouchableOpacity>
                     }
                 </ScrollView>
                 <View style={{ height: 60 }}>

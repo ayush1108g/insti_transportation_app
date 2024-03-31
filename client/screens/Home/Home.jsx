@@ -5,33 +5,15 @@ import React, { useEffect, useState } from 'react'
 const vw = (Dimensions.get('window').width) / 100;
 const vh = (Dimensions.get('window').height) / 100;
 
-const UpdateStop = () => {
+const Home = () => {
   return (
-    <View>
-           <Text style={{marginLeft:24*vw , fontSize:7*vw}}>Update stop</Text>
-              <View style={styles.box1}>
-        
-                 <View style={styles.box1_1 }>
-                    <Text style={{fontWeight:'bold'}}>Stop Name</Text>
-                    <TextInput style={styles.input}></TextInput>
-                </View>
-                 <View style={styles.box1_1 }>
-                    <Text style={{fontWeight:'bold'}}>Fair from Start</Text>
-                    <TextInput style={styles.input}></TextInput>
-                </View>
-                 <View style={styles.box1_1 }>
-                    <Text style={{fontWeight:'bold'}}>Time of Arrival</Text>
-                    <TextInput style={styles.input}></TextInput>
-                </View>
-                <TouchableOpacity style={styles.button}  >
-                    <Text style={{ color: 'white' }}>Upddate</Text>
-                </TouchableOpacity>
-                </View>
+    <View style={{alignItems:'center', flex:1, justifyContent:'center'}}>
+        <Text>Home</Text>
     </View>
   )
 }
 
-export default UpdateStop
+export default Home
 
 const styles = StyleSheet.create({
     box1: {
