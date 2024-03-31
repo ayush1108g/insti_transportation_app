@@ -23,7 +23,7 @@ import Notifications from './Profile/Notifications';
 import Schedule from './Schedule/Schedule';
 import Booking from './Schedule/Booking';
 import Payment from './Schedule/Payment';
-import Ticket from './Schedule/eTicket';
+import Ticket from './Schedule/ETicket';
 
 const AdminNavigator = () => {
     return (
@@ -116,7 +116,7 @@ const Tabs = () => {
                     paddingTop: 10,
                     paddingHorizontal: 10,
                     position: "absolute",
-                    bottom: 2,
+                    marginBottom:5,
                     borderRadius: 10,
                     shadowColor: "#000",
                     shadowOpacity: 0.3,
@@ -126,7 +126,7 @@ const Tabs = () => {
                     alignContent: "center",
                     justifyContent: "center",
                     width: "100%",
-                    height: 40,
+                    height: 45,
                 },
                 tabBarLabelStyle: {
                     fontSize: 12,
