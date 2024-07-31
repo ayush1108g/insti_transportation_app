@@ -1,7 +1,7 @@
 # IITBBS_GC_TransportationApp
 
 # APP LINK
-https://drive.google.com/file/d/1T86FO9GEb6dK2KjqZDC0wmcqEK0WalUZ/view?usp=sharing
+[https://drive.google.com/drive/folders/16xvikN272pXbTbko4Kru10GH3E3kLMFc?usp=sharing](https://drive.google.com/drive/folders/16xvikN272pXbTbko4Kru10GH3E3kLMFc?usp=sharing)
 
 # DUMMY PROFILES for LOGIN
 ### STUDENT
